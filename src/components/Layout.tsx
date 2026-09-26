@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import { Menu, Moon, Sun, X } from 'lucide-react';
 import { MotionConfig } from 'motion/react';
-import { Marquee, Reveal, ScrollProgress } from './Motion';
+import { Marquee, Reveal, ScrollProgress, useSmoothScroll } from './Motion';
 import { GROUP, VENTURES } from '../data';
 import { href } from '../router';
 
@@ -25,6 +25,7 @@ const NAV = [
 export function Layout({ current, children }: { current: string; children: ReactNode }) {
   const [theme, setTheme] = useState<Theme>(readTheme);
   const [open, setOpen] = useState(false);
+  useSmoothScroll();
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);

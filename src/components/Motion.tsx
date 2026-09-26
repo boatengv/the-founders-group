@@ -1,4 +1,4 @@
-import { Children, isValidElement } from 'react';
+import { Children, isValidElement, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { motion, useScroll, useSpring } from 'motion/react';
 import '../motion.css';
@@ -86,4 +86,66 @@ export function Marquee({ items }: { items: string[] }) {
       </div>
     </div>
   );
+}
+
+// Weighted wheel scrolling: the wheel moves a target and the page eases toward
+// it each frame, so a flick glides to a stop instead of jumping in steps.
+// Keyboard, scrollbar and touch stay native, and any outside jump (a route
+// change, find-in-page) simply resyncs. Reduced motion and touch opt out.
+export function useSmoothScroll() {
+  useEffect(() => {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const touch = window.matchMedia('(hover: none), (pointer: coarse)').matches;
+    if (reduce || touch) return;
+    const WEIGHT = 0.28; // seconds to close 63% of the gap; higher is heavier
+    const root = document.documentElement;
+    const clamp = (v: number) => Math.min(Math.max(v, 0), Math.max(0, root.scrollHeight - window.innerHeight));
+    let running = false;
+    let current = window.scrollY;
+    let target = current;
+    let settled = current;
+    let prev = 0;
+    let raf = 0;
+    const sync = () => {
+      current = target = settled = window.scrollY;
+    };
+    const scrollsItself = (node: EventTarget | null) => {
+      for (let el = node instanceof Element ? node : null; el && el !== document.body; el = el.parentElement) {
+        const y = getComputedStyle(el).overflowY;
+        if ((y === 'auto' || y === 'scroll') && el.scrollHeight > el.clientHeight + 1) return true;
+      }
+      return false;
+    };
+    const frame = (now: number) => {
+      const dt = prev ? Math.min(0.05, (now - prev) / 1000) : 1 / 60;
+      prev = now;
+      if (Math.abs(window.scrollY - settled) > 1) sync();
+      target = clamp(target);
+      current += (target - current) * (1 - Math.exp(-dt / WEIGHT));
+      if (Math.abs(target - current) < 0.3) current = target;
+      window.scrollTo(0, current);
+      settled = window.scrollY;
+      running = current !== target;
+      if (running) raf = requestAnimationFrame(frame);
+    };
+    const onWheel = (e: WheelEvent) => {
+      if (e.ctrlKey || e.defaultPrevented || Math.abs(e.deltaX) > Math.abs(e.deltaY) || scrollsItself(e.target)) return;
+      e.preventDefault();
+      if (!running) sync();
+      const unit = e.deltaMode === 1 ? 100 / 3 : e.deltaMode === 2 ? window.innerHeight : 1;
+      target = clamp(target + e.deltaY * unit);
+      if (!running) {
+        running = true;
+        prev = 0;
+        raf = requestAnimationFrame(frame);
+      }
+    };
+    root.classList.add('smooth-scroll');
+    window.addEventListener('wheel', onWheel, { passive: false });
+    return () => {
+      window.removeEventListener('wheel', onWheel);
+      cancelAnimationFrame(raf);
+      root.classList.remove('smooth-scroll');
+    };
+  }, []);
 }

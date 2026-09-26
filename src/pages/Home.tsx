@@ -8,6 +8,9 @@ import { EASE, Reveal, StaggerGrid } from '../components/Motion';
 import { Section } from '../components/Layout';
 import { FounderCard, VentureCard } from '../components/Cards';
 import { Dispatch } from '../components/Dispatch';
+import { Chapter } from '../components/Chapter';
+
+const CHAPTERS = 6;
 
 const PERK_ICONS = [Handshake, Target, Wrench, LineChart];
 
@@ -54,6 +57,7 @@ export function Home() {
 
   return (
     <>
+      <Chapter className='chapter-hero'>
       <section className='hero' ref={heroRef}>
         <HeroMedia fade={mediaFade} />
         <motion.div className='hero-copy' style={{ y: copyY, opacity: copyFade }}>
@@ -118,9 +122,13 @@ export function Home() {
           ))}
         </motion.dl>
       </section>
+      </Chapter>
 
-      <Dispatch />
+      <Chapter n={2} total={CHAPTERS} next='Ventures'>
+        <Dispatch />
+      </Chapter>
 
+      <Chapter n={3} total={CHAPTERS} next='Founders'>
       <Section
         id='ventures'
         eyebrow='Ventures'
@@ -137,7 +145,9 @@ export function Home() {
           ))}
         </StaggerGrid>
       </Section>
+      </Chapter>
 
+      <Chapter n={4} total={CHAPTERS} next='Membership'>
       <Section
         id='founders'
         eyebrow='Founders'
@@ -154,7 +164,9 @@ export function Home() {
           ))}
         </StaggerGrid>
       </Section>
+      </Chapter>
 
+      <Chapter n={5} total={CHAPTERS} next='Join'>
       <PhotoBand />
 
       <Section id='membership' eyebrow='Membership' title='What members get'>
@@ -171,7 +183,9 @@ export function Home() {
           })}
         </StaggerGrid>
       </Section>
+      </Chapter>
 
+      <Chapter n={6} total={CHAPTERS} pin={false}>
       <Reveal>
       <section className='band'>
         <div>
@@ -194,6 +208,7 @@ export function Home() {
         </a>
       </section>
       </Reveal>
+      </Chapter>
     </>
   );
 }
