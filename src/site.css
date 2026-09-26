@@ -72,9 +72,7 @@ img {
 }
 
 .shell {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding-inline: 24px;
+  padding-inline: var(--gutter);
   padding-block: 0 32px;
 }
 
@@ -1152,9 +1150,6 @@ h3 {
 }
 
 @media (max-width: 720px) {
-  .shell {
-    padding-inline: 16px;
-  }
   .menu-btn {
     display: inline-grid;
   }
