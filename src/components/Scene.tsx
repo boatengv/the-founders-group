@@ -7,7 +7,9 @@ import '../scene.css';
 
 // A slowly turning network of the group's real founders and ventures.
 // Ventures sit on an inner ring in their own colours, founders orbit outside,
-// and small sparks travel along each founder-venture link.
+// and small sparks travel along each founder-venture link. Behind it sits a
+// twinkling starfield with one bright north star, and every so often a comet
+// leaves a venture and chases it.
 function startScene(el: HTMLDivElement): () => void {
   let renderer: THREE.WebGLRenderer;
   try {
@@ -150,6 +152,124 @@ function startScene(el: HTMLDivElement): () => void {
   disposables.push(dustGeo, dustMat);
   scene.add(new THREE.Points(dustGeo, dustMat));
 
+  // Soft round sprite for stars and comets.
+  const makeTexture = (draw: (ctx: CanvasRenderingContext2D, n: number) => void, n = 64) => {
+    const c = document.createElement('canvas');
+    c.width = c.height = n;
+    const ctx = c.getContext('2d')!;
+    draw(ctx, n);
+    const tex = new THREE.CanvasTexture(c);
+    disposables.push(tex);
+    return tex;
+  };
+  const glowTex = makeTexture((ctx, n) => {
+    const g = ctx.createRadialGradient(n / 2, n / 2, 0, n / 2, n / 2, n / 2);
+    g.addColorStop(0, 'rgba(255,255,255,1)');
+    g.addColorStop(0.25, 'rgba(255,255,255,0.8)');
+    g.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, n, n);
+  });
+  // Four-point flare for the north star.
+  const flareTex = makeTexture((ctx, n) => {
+    const h = n / 2;
+    const beam = (w: number, len: number) => {
+      const g = ctx.createLinearGradient(h - len, 0, h + len, 0);
+      g.addColorStop(0, 'rgba(255,255,255,0)');
+      g.addColorStop(0.5, 'rgba(255,255,255,1)');
+      g.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.fillStyle = g;
+      ctx.fillRect(h - len, h - w / 2, len * 2, w);
+    };
+    beam(n * 0.025, h);
+    ctx.save();
+    ctx.translate(h, h);
+    ctx.rotate(Math.PI / 2);
+    ctx.translate(-h, -h);
+    beam(n * 0.025, h);
+    ctx.restore();
+  }, 256);
+  const streakTex = makeTexture((ctx, n) => {
+    const g = ctx.createLinearGradient(0, 0, n, 0);
+    g.addColorStop(0, 'rgba(255,255,255,0)');
+    g.addColorStop(0.85, 'rgba(255,255,255,0.9)');
+    g.addColorStop(1, 'rgba(255,255,255,1)');
+    ctx.fillStyle = g;
+    ctx.fillRect(0, n / 2 - 2, n, 4);
+  }, 128);
+
+  // Starfield: three layers that twinkle out of step with each other.
+  const starTones = () =>
+    isLight() ? ['#3d424a', '#6f747c', '#b0561c'] : ['#ffffff', '#cfd8ff', '#ffd2ad'];
+  const starLayers: Array<{ mat: THREE.PointsMaterial; speed: number; phase: number; base: number }> = [];
+  [0, 1, 2].forEach(layer => {
+    const count = 420;
+    const arr = new Float32Array(count * 3);
+    for (let i = 0; i < count; i++) {
+      arr[i * 3] = (rand() - 0.5) * 95;
+      arr[i * 3 + 1] = (rand() - 0.5) * 48;
+      arr[i * 3 + 2] = -10 - rand() * 28;
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(arr, 3));
+    const mat = new THREE.PointsMaterial({
+      map: glowTex,
+      color: new THREE.Color(starTones()[layer]),
+      size: [0.22, 0.32, 0.42][layer],
+      transparent: true,
+      opacity: 0.8,
+      depthWrite: false,
+    });
+    disposables.push(geo, mat);
+    scene.add(new THREE.Points(geo, mat));
+    starLayers.push({ mat, speed: [0.9, 1.4, 0.6][layer], phase: layer * 2.1, base: [0.75, 0.6, 0.85][layer] });
+  });
+
+  // The north star the ventures chase.
+  const accent = () => new THREE.Color(cssColor('--accent', '#ff6a1a'));
+  const northGlowMat = new THREE.SpriteMaterial({ map: glowTex, color: accent(), transparent: true, depthWrite: false });
+  const northFlareMat = new THREE.SpriteMaterial({ map: flareTex, color: accent(), transparent: true, depthWrite: false, opacity: 0.9 });
+  const northCoreMat = new THREE.SpriteMaterial({ map: glowTex, color: 0xffffff, transparent: true, depthWrite: false });
+  disposables.push(northGlowMat, northFlareMat, northCoreMat);
+  const north = new THREE.Group();
+  const northGlow = new THREE.Sprite(northGlowMat);
+  const northFlare = new THREE.Sprite(northFlareMat);
+  const northCore = new THREE.Sprite(northCoreMat);
+  northCore.scale.setScalar(0.5);
+  if (isLight()) northCoreMat.color.copy(accent());
+  north.add(northGlow, northFlare, northCore);
+  scene.add(north);
+  let pulse = 0;
+
+  // Comets: one per venture, leaving its node and arcing towards the north star.
+  type Comet = { vid: string; sprites: THREE.Sprite[]; t: number; delay: number; speed: number; lift: number };
+  const TRAIL = 9;
+  const comets: Comet[] = VENTURES.map((v, i) => {
+    const hex = sceneColor(v.id, v.color);
+    const sprites: THREE.Sprite[] = [];
+    for (let k = 0; k < TRAIL; k++) {
+      const mat = tone(
+        new THREE.SpriteMaterial({ map: glowTex, transparent: true, depthWrite: false, opacity: k === 0 ? 1 : 0.55 * (1 - k / TRAIL) }),
+        hex,
+      );
+      disposables.push(mat);
+      const sp = new THREE.Sprite(mat);
+      sp.visible = false;
+      scene.add(sp);
+      sprites.push(sp);
+    }
+    return { vid: v.id, sprites, t: 0, delay: 0.8 + i * 1.3, speed: 0.32 + rand() * 0.12, lift: 1.5 + rand() * 2.5 };
+  });
+
+  // An occasional shooting star across the back of the sky.
+  const shootMat = new THREE.MeshBasicMaterial({ map: streakTex, color: new THREE.Color(starTones()[0]), transparent: true, depthWrite: false, opacity: 0 });
+  const shootGeo = new THREE.PlaneGeometry(1, 1);
+  disposables.push(shootMat, shootGeo);
+  const shoot = new THREE.Mesh(shootGeo, shootMat);
+  shoot.scale.set(6, 0.12, 1);
+  scene.add(shoot);
+  const shootState = { t: 1, wait: 2.5, from: new THREE.Vector3(), dir: new THREE.Vector3() };
+
   group.rotation.x = 0.35;
 
   const resize = () => {
@@ -164,6 +284,8 @@ function startScene(el: HTMLDivElement): () => void {
     group.position.x = wide ? 3.6 : 0;
     group.position.y = wide ? -0.2 : 1.2;
     group.scale.setScalar(wide ? 1.35 : 0.95);
+    if (wide) north.position.set(Math.min(13, 3.6 + camera.aspect * 4.2), 6.4, -5);
+    else north.position.set(2.6, 8.2, -6);
   };
   resize();
   const ro = new ResizeObserver(resize);
@@ -181,6 +303,13 @@ function startScene(el: HTMLDivElement): () => void {
   const themeWatch = new MutationObserver(() => {
     founderMat.color.set(cssColor('--ink', '#f2f3f5'));
     dustMat.color.set(cssColor('--muted', '#9ba1ac'));
+    const tones = starTones();
+    starLayers.forEach((l, i) => l.mat.color.set(tones[i]));
+    shootMat.color.set(tones[0]);
+    northGlowMat.color.copy(accent());
+    northFlareMat.color.copy(accent());
+    if (isLight()) northCoreMat.color.copy(accent());
+    else northCoreMat.color.set('#ffffff');
     toned.forEach(t => t.mat.color.copy(toneOf(t.base)));
     if (reduce) renderer.render(scene, camera);
   });
@@ -193,7 +322,85 @@ function startScene(el: HTMLDivElement): () => void {
   });
   io.observe(el);
 
+  const ventureLocal = new THREE.Vector3();
+  const ctrl = new THREE.Vector3();
+  const pt = new THREE.Vector3();
+  const bezier = (a: THREE.Vector3, c: THREE.Vector3, b: THREE.Vector3, u: number, out: THREE.Vector3) => {
+    const m = 1 - u;
+    return out.set(
+      m * m * a.x + 2 * m * u * c.x + u * u * b.x,
+      m * m * a.y + 2 * m * u * c.y + u * u * b.y,
+      m * m * a.z + 2 * m * u * c.z + u * u * b.z,
+    );
+  };
+  // Slow start, then accelerating: the chase.
+  const ease = (u: number) => Math.pow(Math.max(0, Math.min(1, u)), 1.7);
+
+  const sky = (time: number, dt: number) => {
+    starLayers.forEach(l => {
+      l.mat.opacity = l.base * (0.55 + 0.45 * Math.sin(time * l.speed + l.phase));
+    });
+
+    pulse = Math.max(0, pulse - dt * 1.6);
+    const breathe = 1 + 0.07 * Math.sin(time * 1.4);
+    northGlow.scale.setScalar(2.6 * breathe + pulse * 2.2);
+    northFlare.scale.setScalar(4.2 * breathe + pulse * 3);
+    northFlareMat.rotation = Math.sin(time * 0.25) * 0.2;
+    northGlowMat.opacity = 0.75 + pulse * 0.25;
+
+    group.updateMatrix();
+    comets.forEach(c => {
+      if (c.delay > 0) {
+        c.delay -= dt;
+        c.sprites.forEach(s => (s.visible = false));
+        return;
+      }
+      c.t += dt * c.speed;
+      ventureLocal.copy(venturePos.get(c.vid)!).applyMatrix4(group.matrix);
+      ctrl.copy(ventureLocal).add(north.position).multiplyScalar(0.5);
+      ctrl.y += c.lift;
+      const fade = 1 - Math.max(0, (c.t - 0.88) / 0.12);
+      c.sprites.forEach((s, k) => {
+        const u = c.t - k * 0.022;
+        s.visible = u > 0 && c.t < 1;
+        if (!s.visible) return;
+        bezier(ventureLocal, ctrl, north.position, ease(u), pt);
+        s.position.copy(pt);
+        s.scale.setScalar((k === 0 ? 0.34 : 0.26 * (1 - k / TRAIL) + 0.04) * fade);
+      });
+      if (c.t >= 1) {
+        pulse = 1;
+        c.t = 0;
+        c.delay = 2.5 + rand() * 6;
+        c.speed = 0.3 + rand() * 0.14;
+        c.lift = 1.5 + rand() * 2.5;
+      }
+    });
+
+    const sh = shootState;
+    if (sh.t >= 1) {
+      shootMat.opacity = 0;
+      sh.wait -= dt;
+      if (sh.wait <= 0) {
+        sh.t = 0;
+        sh.wait = 4 + rand() * 6;
+        sh.from.set(-6 + rand() * 30, 6 + rand() * 7, -14);
+        sh.dir.set(-1, -0.42 - rand() * 0.2, 0).normalize();
+        shoot.rotation.z = Math.atan2(sh.dir.y, sh.dir.x) + Math.PI;
+      }
+    } else {
+      sh.t += dt / 0.9;
+      shoot.position.copy(sh.from).addScaledVector(sh.dir, sh.t * 14);
+      shootMat.opacity = Math.sin(Math.min(1, sh.t) * Math.PI) * 0.9;
+    }
+  };
+
+  let last = performance.now();
   const step = () => {
+    const now = performance.now();
+    const dt = Math.min(0.05, (now - last) / 1000);
+    last = now;
+    sky(now / 1000, dt);
     group.rotation.y += 0.0016;
     group.rotation.x += (0.35 + targetY - group.rotation.x) * 0.04;
     scene.rotation.y += (targetX - scene.rotation.y) * 0.04;
@@ -212,6 +419,8 @@ function startScene(el: HTMLDivElement): () => void {
   };
   if (reduce) {
     sparks.forEach(s => s.mesh.position.lerpVectors(s.from, s.to, s.t));
+    comets.forEach(c => (c.delay = Infinity));
+    sky(0, 0);
     renderer.render(scene, camera);
   } else {
     loop();

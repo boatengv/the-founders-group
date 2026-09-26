@@ -6,7 +6,8 @@ import { href } from '../router';
 import { HeroMedia, PhotoBand } from '../components/Scene';
 import { EASE, Reveal, StaggerGrid } from '../components/Motion';
 import { Section } from '../components/Layout';
-import { FounderCard, MomentCard, VentureCard } from '../components/Cards';
+import { FounderCard, VentureCard } from '../components/Cards';
+import { Dispatch } from '../components/Dispatch';
 
 const PERK_ICONS = [Handshake, Target, Wrench, LineChart];
 
@@ -118,20 +119,7 @@ export function Home() {
         </motion.dl>
       </section>
 
-      <Section id='moments' eyebrow='Moments' title='What we have shipped lately'>
-        <StaggerGrid className='reel' list>
-          {MOMENTS.map((m, i) => (
-            <MomentCard key={i} moment={m} />
-          ))}
-          <a key='next' className='moment moment-cta' href={href('/apply')}>
-              <span className='moment-date'>Next</span>
-              <p className='moment-title'>Your moment could be next.</p>
-              <span className='moment-link'>
-                Apply <ArrowRight size={14} />
-              </span>
-            </a>
-        </StaggerGrid>
-      </Section>
+      <Dispatch />
 
       <Section
         id='ventures'
