@@ -8,8 +8,7 @@ import '../scene.css';
 // A slowly turning network of the group's real founders and ventures.
 // Ventures sit on an inner ring in their own colours, founders orbit outside,
 // and small sparks travel along each founder-venture link. Behind it sits a
-// twinkling starfield with one bright north star, and every so often a comet
-// leaves a venture and chases it. The star is kept small and dim on purpose.
+// twinkling starfield with one north star, kept small and soft on purpose.
 function startScene(el: HTMLDivElement): () => void {
   let renderer: THREE.WebGLRenderer;
   try {
@@ -152,7 +151,7 @@ function startScene(el: HTMLDivElement): () => void {
   disposables.push(dustGeo, dustMat);
   scene.add(new THREE.Points(dustGeo, dustMat));
 
-  // Soft round sprite for stars and comets.
+  // Soft round sprite for the stars.
   const makeTexture = (draw: (ctx: CanvasRenderingContext2D, n: number) => void, n = 64) => {
     const c = document.createElement('canvas');
     c.width = c.height = n;
@@ -219,39 +218,19 @@ function startScene(el: HTMLDivElement): () => void {
 
   // The north star the ventures chase.
   const accent = () => new THREE.Color(cssColor('--accent', '#ff6a1a'));
-  const northGlowMat = new THREE.SpriteMaterial({ map: glowTex, color: accent(), transparent: true, depthWrite: false });
-  const northFlareMat = new THREE.SpriteMaterial({ map: flareTex, color: accent(), transparent: true, depthWrite: false, opacity: 0.35 });
-  const northCoreMat = new THREE.SpriteMaterial({ map: glowTex, color: 0xffffff, transparent: true, depthWrite: false, opacity: 0.6 });
+  const northGlowMat = new THREE.SpriteMaterial({ map: glowTex, color: accent(), transparent: true, depthWrite: false, opacity: 0.5 });
+  const northFlareMat = new THREE.SpriteMaterial({ map: flareTex, color: accent(), transparent: true, depthWrite: false, opacity: 0.55 });
+  const northCoreMat = new THREE.SpriteMaterial({ map: glowTex, color: 0xffffff, transparent: true, depthWrite: false, opacity: 0.85 });
   disposables.push(northGlowMat, northFlareMat, northCoreMat);
   const north = new THREE.Group();
   const northGlow = new THREE.Sprite(northGlowMat);
   const northFlare = new THREE.Sprite(northFlareMat);
   const northCore = new THREE.Sprite(northCoreMat);
-  northCore.scale.setScalar(0.28);
+  northCore.scale.setScalar(0.36);
   if (isLight()) northCoreMat.color.copy(accent());
   north.add(northGlow, northFlare, northCore);
   scene.add(north);
-  let pulse = 0;
 
-  // Comets: one per venture, leaving its node and arcing towards the north star.
-  type Comet = { vid: string; sprites: THREE.Sprite[]; t: number; delay: number; speed: number; lift: number };
-  const TRAIL = 9;
-  const comets: Comet[] = VENTURES.map((v, i) => {
-    const hex = sceneColor(v.id, v.color);
-    const sprites: THREE.Sprite[] = [];
-    for (let k = 0; k < TRAIL; k++) {
-      const mat = tone(
-        new THREE.SpriteMaterial({ map: glowTex, transparent: true, depthWrite: false, opacity: k === 0 ? 1 : 0.55 * (1 - k / TRAIL) }),
-        hex,
-      );
-      disposables.push(mat);
-      const sp = new THREE.Sprite(mat);
-      sp.visible = false;
-      scene.add(sp);
-      sprites.push(sp);
-    }
-    return { vid: v.id, sprites, t: 0, delay: 0.8 + i * 1.3, speed: 0.32 + rand() * 0.12, lift: 1.5 + rand() * 2.5 };
-  });
 
 
   group.rotation.x = 0.35;
@@ -305,69 +284,20 @@ function startScene(el: HTMLDivElement): () => void {
   });
   io.observe(el);
 
-  const ventureLocal = new THREE.Vector3();
-  const ctrl = new THREE.Vector3();
-  const pt = new THREE.Vector3();
-  const bezier = (a: THREE.Vector3, c: THREE.Vector3, b: THREE.Vector3, u: number, out: THREE.Vector3) => {
-    const m = 1 - u;
-    return out.set(
-      m * m * a.x + 2 * m * u * c.x + u * u * b.x,
-      m * m * a.y + 2 * m * u * c.y + u * u * b.y,
-      m * m * a.z + 2 * m * u * c.z + u * u * b.z,
-    );
-  };
-  // Slow start, then accelerating: the chase.
-  const ease = (u: number) => Math.pow(Math.max(0, Math.min(1, u)), 1.7);
 
-  const sky = (time: number, dt: number) => {
+  const sky = (time: number) => {
     starLayers.forEach(l => {
       l.mat.opacity = l.base * (0.55 + 0.45 * Math.sin(time * l.speed + l.phase));
     });
 
-    pulse = Math.max(0, pulse - dt * 1.6);
     const breathe = 1 + 0.04 * Math.sin(time * 1.4);
-    northGlow.scale.setScalar(1.1 * breathe + pulse * 0.4);
-    northFlare.scale.setScalar(1.6 * breathe + pulse * 0.5);
+    northGlow.scale.setScalar(1.5 * breathe);
+    northFlare.scale.setScalar(2.3 * breathe);
     northFlareMat.rotation = Math.sin(time * 0.25) * 0.2;
-    northGlowMat.opacity = 0.3 + pulse * 0.15;
-
-    group.updateMatrix();
-    comets.forEach(c => {
-      if (c.delay > 0) {
-        c.delay -= dt;
-        c.sprites.forEach(s => (s.visible = false));
-        return;
-      }
-      c.t += dt * c.speed;
-      ventureLocal.copy(venturePos.get(c.vid)!).applyMatrix4(group.matrix);
-      ctrl.copy(ventureLocal).add(north.position).multiplyScalar(0.5);
-      ctrl.y += c.lift;
-      const fade = 1 - Math.max(0, (c.t - 0.88) / 0.12);
-      c.sprites.forEach((s, k) => {
-        const u = c.t - k * 0.022;
-        s.visible = u > 0 && c.t < 1;
-        if (!s.visible) return;
-        bezier(ventureLocal, ctrl, north.position, ease(u), pt);
-        s.position.copy(pt);
-        s.scale.setScalar((k === 0 ? 0.34 : 0.26 * (1 - k / TRAIL) + 0.04) * fade);
-      });
-      if (c.t >= 1) {
-        pulse = 1;
-        c.t = 0;
-        c.delay = 2.5 + rand() * 6;
-        c.speed = 0.3 + rand() * 0.14;
-        c.lift = 1.5 + rand() * 2.5;
-      }
-    });
-
   };
 
-  let last = performance.now();
   const step = () => {
-    const now = performance.now();
-    const dt = Math.min(0.05, (now - last) / 1000);
-    last = now;
-    sky(now / 1000, dt);
+    sky(performance.now() / 1000);
     group.rotation.y += 0.0016;
     group.rotation.x += (0.35 + targetY - group.rotation.x) * 0.04;
     scene.rotation.y += (targetX - scene.rotation.y) * 0.04;
@@ -386,8 +316,7 @@ function startScene(el: HTMLDivElement): () => void {
   };
   if (reduce) {
     sparks.forEach(s => s.mesh.position.lerpVectors(s.from, s.to, s.t));
-    comets.forEach(c => (c.delay = Infinity));
-    sky(0, 0);
+    sky(0);
     renderer.render(scene, camera);
   } else {
     loop();
