@@ -323,9 +323,9 @@
   box-shadow: 0 0 14px -2px color-mix(in srgb, var(--glow) 70%, transparent);
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 1100px) {
   .tv-layout {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   .tv-founders {
     grid-auto-rows: auto;
@@ -357,7 +357,7 @@
 
 /* ---------- fit the whole section in one screen under the nav ---------- */
 
-@media (min-width: 1001px) {
+@media (min-width: 1101px) {
   .tv-section {
     scroll-margin-top: calc(var(--nav-h, 75px) + 8px);
   }
@@ -390,8 +390,8 @@
     font-size: 16px;
   }
 
-  .tv-founder .fcard-index {
-    flex-wrap: nowrap;
+  .tv-founder .fcard-index li {
+    white-space: nowrap;
   }
 
   /* the picture gives up height first; the caption keeps its size */
@@ -415,5 +415,33 @@
 
   .tv-controls {
     padding: 10px 6px 12px;
+  }
+}
+
+/* the smallest phones: keep the remote strip inside the set */
+@media (max-width: 420px) {
+  .tv-controls {
+    gap: 6px;
+    padding: 10px 2px 12px;
+  }
+  .tv-dial {
+    gap: 4px;
+    min-width: 0;
+  }
+  .tv-dial button {
+    width: 26px;
+    height: 28px;
+    font-size: 11px;
+  }
+  .tv-btn {
+    padding: 8px;
+  }
+  .tv-btn-label {
+    display: none;
+  }
+  .tv-osd {
+    top: 12px;
+    left: 12px;
+    right: 12px;
   }
 }

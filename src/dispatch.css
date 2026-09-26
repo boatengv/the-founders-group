@@ -93,7 +93,7 @@
 
 .lead {
   position: relative;
-  min-height: 460px;
+  min-height: clamp(520px, 62svh, 640px);
   background: #0b0c0f;
   color: #f2f3f5;
 }
@@ -383,7 +383,7 @@
     grid-template-columns: 1fr;
   }
   .lead {
-    min-height: 400px;
+    min-height: 460px;
   }
   .top-stories {
     border-left: 0;
@@ -397,6 +397,6 @@
     align-items: flex-start;
   }
   .lead {
-    min-height: 360px;
+    min-height: 420px;
   }
 }

@@ -135,7 +135,7 @@ export function VentureTV({ founders = FOUNDERS }: { founders?: typeof FOUNDERS 
 
           <div className='tv-controls'>
             <button type='button' className='tv-btn' onClick={() => tune(channel - 1)} aria-label='Previous channel'>
-              <ChevronLeft size={16} /> CH
+              <ChevronLeft size={16} /> <span className='tv-btn-label'>CH</span>
             </button>
             <div className='tv-dial' role='group' aria-label='Channels'>
               {VENTURES.map((x, i) => (
@@ -152,7 +152,7 @@ export function VentureTV({ founders = FOUNDERS }: { founders?: typeof FOUNDERS 
               ))}
             </div>
             <button type='button' className='tv-btn' onClick={() => tune(channel + 1)} aria-label='Next channel'>
-              CH <ChevronRight size={16} />
+              <span className='tv-btn-label'>CH</span> <ChevronRight size={16} />
             </button>
           </div>
         </Reveal>

@@ -15,7 +15,7 @@
 .reveal,
 .stagger-item {
   opacity: 0;
-  transform: translateY(45px);
+  transform: translateY(64px);
   transition:
     opacity 0.9s ease,
     transform 1.1s cubic-bezier(0.2, 0.75, 0.25, 1);
@@ -27,7 +27,7 @@
 
 .reveal.from-above:not(.in-view),
 .stagger.from-above:not(.in-view) .stagger-item {
-  transform: translateY(-45px);
+  transform: translateY(-64px);
 }
 
 .reveal.in-view,
