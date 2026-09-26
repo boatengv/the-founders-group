@@ -1,0 +1,103 @@
+/* ---------- hero imagery ---------- */
+
+html,
+body {
+  overflow-x: clip;
+}
+
+.hero {
+  position: relative;
+}
+
+.hero > *:not(.hero-media) {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-media {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 100vw;
+  transform: translateX(-50%);
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.hero-media::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 70% at 22% 55%, color-mix(in srgb, var(--bg) 78%, transparent), transparent 70%),
+    linear-gradient(to top, var(--bg), transparent 22%);
+}
+
+.hero-photo {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 62%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.6;
+}
+
+.hero-scene {
+  position: absolute;
+  inset: 0;
+}
+
+.hero-scene canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.photo-band {
+  display: none;
+  position: relative;
+  margin: 72px 0 0;
+  border-radius: 28px;
+  overflow: hidden;
+}
+
+.photo-band.show {
+  display: block;
+}
+
+.photo-band img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 21 / 9;
+  object-fit: cover;
+}
+
+.photo-band figcaption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: clamp(18px, 4vw, 36px);
+  background: linear-gradient(to top, rgba(11, 12, 15, 0.85), transparent);
+  color: #f2f3f5;
+  font: 600 clamp(18px, 2.4vw, 28px)/1.25 var(--display);
+}
+
+@media (max-width: 900px) {
+  .hero-scene {
+    opacity: 0.5;
+  }
+  .hero-media::after {
+    background: linear-gradient(to top, var(--bg), transparent 40%);
+  }
+  .hero-photo {
+    width: 100%;
+    opacity: 0.35;
+  }
+  .photo-band img {
+    aspect-ratio: 4 / 3;
+  }
+}
