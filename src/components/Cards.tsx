@@ -37,8 +37,47 @@ export function MomentCard({ moment }: { moment: Moment }) {
   );
 }
 
-export function FounderCard({ founder }: { founder: Founder }) {
+export function FounderCard({
+  founder,
+  compact,
+  onVenture,
+}: {
+  founder: Founder;
+  compact?: boolean;
+  onVenture?: (id: string) => void;
+}) {
   const first = founder.ventures[0];
+  if (compact) {
+    // One company reads as a single line; more than one becomes a small
+    // numbered index, each entry able to tune whatever is listening.
+    const many = founder.ventures.length > 1;
+    return (
+      <a
+        className='fcard fcard-compact'
+        href={href('/ventures/' + first)}
+        aria-label={founder.name + ': ' + founder.roles.join('; ')}
+      >
+        <Avatar founder={founder} />
+        <div className='fcard-text'>
+          <h3>{founder.name}</h3>
+          {many ? (
+            <ol className='fcard-index' aria-hidden='true'>
+              {founder.ventures.map((id, i) => (
+                <li key={id} onMouseEnter={onVenture ? () => onVenture(id) : undefined}>
+                  <b>{String(i + 1).padStart(2, '0')}</b>
+                  {ventureById(id)?.name || id}
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <p className='fcard-role'>
+              <span>{founder.roles[0]}</span>
+            </p>
+          )}
+        </div>
+      </a>
+    );
+  }
   return (
     <a className='fcard' href={href('/ventures/' + first)}>
       <Avatar founder={founder} size='lg' />

@@ -1,0 +1,419 @@
+/* ---------- founders and the ventures TV ---------- */
+
+.tv-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
+  gap: clamp(24px, 4vw, 56px);
+  align-items: stretch;
+}
+
+/* founders in one column down the left, sharing the TV's top and bottom edge */
+.tv-founders {
+  display: grid;
+  grid-auto-rows: 1fr;
+  gap: 10px;
+}
+
+.tv-founder {
+  position: relative;
+  display: flex;
+}
+
+.tv-founder .fcard {
+  flex: 1;
+}
+
+.tv-founder:hover,
+.tv-founder:focus-within {
+  z-index: 3;
+}
+
+.tv-founder .fcard {
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+/* the founders behind whatever is on screen */
+.tv-founder.on-air .fcard {
+  border-color: var(--accent);
+  transform: translateX(6px);
+}
+
+/* the set: a dark bezel around the screen, whatever the theme */
+.tv {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 14px 14px 0;
+  border-radius: 30px;
+  background: linear-gradient(160deg, #23262d, #121418 60%);
+  box-shadow:
+    0 30px 70px -20px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.tv-screen {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 20px;
+  background: #060709;
+  color: #f2f3f5;
+  outline: none;
+  box-shadow: 0 0 60px -10px color-mix(in srgb, var(--glow) 45%, transparent);
+  transition: box-shadow 0.4s ease;
+}
+
+.tv-screen:focus-visible {
+  box-shadow:
+    0 0 0 2px var(--accent),
+    0 0 60px -10px color-mix(in srgb, var(--glow) 45%, transparent);
+}
+
+/* the programme: the venture's site across the top, its caption underneath */
+.tv-programme {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  transform-origin: 50% 50%;
+}
+
+.tv-picture {
+  position: relative;
+  flex: 1 0 auto;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 78% 22%, color-mix(in srgb, var(--glow) 55%, transparent), transparent 55%),
+    radial-gradient(circle at 10% 110%, color-mix(in srgb, var(--glow) 25%, transparent), transparent 50%),
+    #0b0c0f;
+}
+
+.tv-picture img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: left top;
+}
+
+.tv-card-name {
+  position: absolute;
+  top: 12%;
+  right: -0.06em;
+  max-width: 100%;
+  font: 800 clamp(56px, 9vw, 132px)/0.85 var(--display);
+  letter-spacing: -0.05em;
+  text-align: right;
+  color: transparent;
+  -webkit-text-stroke: 1px color-mix(in srgb, var(--glow) 55%, rgba(242, 243, 245, 0.2));
+}
+
+.tv-osd {
+  position: absolute;
+  top: 18px;
+  left: 20px;
+  right: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font: 500 12px/1 var(--mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.tv-ch,
+.tv-stage {
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: rgba(6, 7, 9, 0.78);
+}
+
+.tv-ch {
+  color: var(--glow);
+  text-shadow: 0 0 12px color-mix(in srgb, var(--glow) 70%, transparent);
+}
+
+.tv-stage {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #f2f3f5;
+}
+
+.tv-stage i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #ff3b30;
+  animation: live-ping 1.8s ease-out infinite;
+  box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.6);
+}
+
+.tv-stage-launching {
+  color: var(--accent);
+}
+
+/* the caption sits on its own band below the picture, so neither covers the other */
+.tv-picture::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 18%;
+  background: linear-gradient(to top, #060709, transparent);
+}
+
+.tv-info {
+  position: relative;
+  padding: 6px clamp(18px, 3vw, 30px) clamp(18px, 2.4vw, 26px);
+}
+
+.tv-sector {
+  margin: 0 0 8px;
+  font: 500 12px/1 var(--mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--glow);
+}
+
+.tv-info h3 {
+  font-size: clamp(26px, 3vw, 40px);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1;
+}
+
+.tv-pitch {
+  margin: 6px 0 0;
+  max-width: 46ch;
+  color: #c4c7cc;
+}
+
+.tv-by {
+  margin: 6px 0 0;
+  font-size: 14px;
+  color: #9ba1ac;
+}
+
+.tv-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 22px;
+  margin-top: 12px;
+}
+
+.tv-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #f2f3f5;
+  font-weight: 600;
+  font-size: 15px;
+  text-decoration: none;
+}
+
+.tv-links a:hover {
+  color: var(--accent);
+}
+
+/* CRT texture: fine scanlines, a curved-glass sheen, and a burst of static on
+   every channel change */
+.tv-lines,
+.tv-glass,
+.tv-static {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.tv-lines {
+  background: repeating-linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 3px);
+  mix-blend-mode: overlay;
+}
+
+.tv-glass {
+  border-radius: inherit;
+  background: radial-gradient(120% 90% at 30% 0%, rgba(255, 255, 255, 0.07), transparent 45%);
+  box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.55);
+}
+
+.tv-static {
+  opacity: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 220px 220px;
+}
+
+.tv-static.flick {
+  animation: tv-static 0.5s steps(6) both;
+}
+
+@keyframes tv-static {
+  0% {
+    opacity: 0.9;
+    background-position: 0 0;
+  }
+  50% {
+    opacity: 0.6;
+    background-position: -60px 40px;
+  }
+  100% {
+    opacity: 0;
+    background-position: 30px -50px;
+  }
+}
+
+/* the remote strip under the screen */
+.tv-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 6px 14px;
+}
+
+.tv-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 9px 14px;
+  border: 1px solid rgba(242, 243, 245, 0.12);
+  border-radius: 999px;
+  background: rgba(242, 243, 245, 0.06);
+  color: #f2f3f5;
+  font: 600 12px/1 var(--mono);
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.tv-btn:hover {
+  border-color: var(--accent);
+  background: rgba(242, 243, 245, 0.1);
+}
+
+.tv-dial {
+  display: flex;
+  gap: 6px;
+}
+
+.tv-dial button {
+  width: 38px;
+  height: 30px;
+  border: 1px solid rgba(242, 243, 245, 0.1);
+  border-radius: 8px;
+  background: transparent;
+  color: #6f747c;
+  font: 500 12px/1 var(--mono);
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease, box-shadow 0.2s ease;
+}
+
+.tv-dial button:hover {
+  color: #f2f3f5;
+}
+
+.tv-dial button[aria-pressed='true'] {
+  color: #f2f3f5;
+  border-color: var(--glow);
+  box-shadow: 0 0 14px -2px color-mix(in srgb, var(--glow) 70%, transparent);
+}
+
+@media (max-width: 1000px) {
+  .tv-layout {
+    grid-template-columns: 1fr;
+  }
+  .tv-founders {
+    grid-auto-rows: auto;
+  }
+  /* on small screens the TV comes first, the founders follow */
+  .tv {
+    order: -1;
+  }
+  .tv-founder.on-air .fcard {
+    transform: none;
+  }
+}
+
+@media (max-width: 560px) {
+  .tv {
+    padding: 8px 8px 0;
+    border-radius: 22px;
+  }
+  .tv-screen {
+    border-radius: 16px;
+  }
+  .tv-dial button {
+    width: 30px;
+  }
+  .tv-btn {
+    padding: 8px 10px;
+  }
+}
+
+/* ---------- fit the whole section in one screen under the nav ---------- */
+
+@media (min-width: 1001px) {
+  .tv-section {
+    scroll-margin-top: calc(var(--nav-h, 75px) + 8px);
+  }
+
+  .tv-section .section-head {
+    margin-bottom: 18px;
+  }
+
+  /* heading, founders and TV together fill the screen below the nav */
+  .tv-layout {
+    height: clamp(460px, calc(100svh - var(--nav-h, 75px) - 150px), 700px);
+  }
+
+  .tv-founders {
+    gap: 8px;
+  }
+
+  .tv-founder .fcard-compact {
+    padding: 10px 14px;
+    gap: 12px;
+  }
+
+  .tv-founder .avatar {
+    width: 48px;
+    height: 48px;
+    font-size: 16px;
+  }
+
+  .tv-founder .fcard-compact h3 {
+    font-size: 16px;
+  }
+
+  .tv-founder .fcard-index {
+    flex-wrap: nowrap;
+  }
+
+  /* the picture gives up height first; the caption keeps its size */
+  .tv-picture {
+    flex: 1 1 0;
+    min-height: 0;
+    aspect-ratio: auto;
+  }
+
+  .tv-info {
+    padding-top: 2px;
+  }
+
+  .tv-info h3 {
+    font-size: clamp(24px, 2.4vw, 34px);
+  }
+
+  .tv-links {
+    margin-top: 8px;
+  }
+
+  .tv-controls {
+    padding: 10px 6px 12px;
+  }
+}

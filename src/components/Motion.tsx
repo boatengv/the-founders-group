@@ -6,8 +6,8 @@ import '../motion.css';
 
 export const EASE = [0.22, 1, 0.36, 1] as const;
 
-// Scenes come in the way they do on a film site: blurred and a little low,
-// then settling into focus once 12% is on screen. They reset only after
+// Scenes come in the way they do on a film site: faded and a little low,
+// then settling into place once 12% is on screen. They reset only after
 // leaving the screen entirely, remembering which edge they left by, so
 // scrolling back up plays them in again from above.
 function useScene<T extends HTMLElement>(threshold = 0.12) {
@@ -91,7 +91,7 @@ export function StaggerGrid({
   );
 }
 
-// A headline that reads itself in: each word brightens and sharpens in turn
+// A headline that reads itself in: each word brightens in turn
 // as the line travels up the screen, and dims again on the way back.
 export function ScrollWords({ text }: { text: string }) {
   const ref = useRef<HTMLSpanElement>(null);
@@ -122,10 +122,9 @@ function Word({
   children: string;
 }) {
   const opacity = useTransform(progress, [from, to], [0.16, 1]);
-  const filter = useTransform(progress, [from, to], ['blur(6px)', 'blur(0px)']);
   return (
     <>
-      <motion.span aria-hidden='true' style={{ opacity, filter }}>
+      <motion.span aria-hidden='true' style={{ opacity }}>
         {children}
       </motion.span>{' '}
     </>

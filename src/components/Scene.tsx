@@ -5,6 +5,15 @@ import type { MotionValue } from 'motion/react';
 import { FOUNDERS, VENTURES } from '../data';
 import '../scene.css';
 
+// Each venture keeps its own colour in the network (and on its TV channel).
+export const SCENE_COLORS: Record<string, string> = {
+  'in-person-tutors': '#19b3a6',
+  'fun-marketing': '#f5c518',
+  adusanko: '#6c8cff',
+  'synthetic-talent': '#e0306f',
+  stealth: '#8a8f98',
+};
+
 // A slowly turning network of the group's real founders and ventures.
 // Ventures sit on an inner ring in their own colours, founders orbit outside,
 // and small sparks travel along each founder-venture link. Behind it sits a
@@ -45,13 +54,6 @@ function startScene(el: HTMLDivElement): () => void {
     mat.color.copy(toneOf(base));
     toned.push({ mat, base });
     return mat;
-  };
-  const SCENE_COLORS: Record<string, string> = {
-    'in-person-tutors': '#19b3a6',
-    'fun-marketing': '#f5c518',
-    adusanko: '#6c8cff',
-    'synthetic-talent': '#e0306f',
-    stealth: '#8a8f98',
   };
   const sceneColor = (id: string, fallback: string) => SCENE_COLORS[id] || fallback;
   const nodeGeo = new THREE.SphereGeometry(1, 32, 32);
@@ -189,33 +191,6 @@ function startScene(el: HTMLDivElement): () => void {
     ctx.restore();
   }, 256);
 
-  // Starfield: three layers that twinkle out of step with each other.
-  const starTones = () =>
-    isLight() ? ['#3d424a', '#6f747c', '#b0561c'] : ['#ffffff', '#cfd8ff', '#ffd2ad'];
-  const starLayers: Array<{ mat: THREE.PointsMaterial; speed: number; phase: number; base: number }> = [];
-  [0, 1, 2].forEach(layer => {
-    const count = 420;
-    const arr = new Float32Array(count * 3);
-    for (let i = 0; i < count; i++) {
-      arr[i * 3] = (rand() - 0.5) * 95;
-      arr[i * 3 + 1] = (rand() - 0.5) * 48;
-      arr[i * 3 + 2] = -10 - rand() * 28;
-    }
-    const geo = new THREE.BufferGeometry();
-    geo.setAttribute('position', new THREE.BufferAttribute(arr, 3));
-    const mat = new THREE.PointsMaterial({
-      map: glowTex,
-      color: new THREE.Color(starTones()[layer]),
-      size: [0.22, 0.32, 0.42][layer],
-      transparent: true,
-      opacity: 0.8,
-      depthWrite: false,
-    });
-    disposables.push(geo, mat);
-    scene.add(new THREE.Points(geo, mat));
-    starLayers.push({ mat, speed: [0.9, 1.4, 0.6][layer], phase: layer * 2.1, base: [0.75, 0.6, 0.85][layer] });
-  });
-
   // The north star the ventures chase.
   const accent = () => new THREE.Color(cssColor('--accent', '#ff6a1a'));
   const northGlowMat = new THREE.SpriteMaterial({ map: glowTex, color: accent(), transparent: true, depthWrite: false, opacity: 0.5 });
@@ -266,8 +241,6 @@ function startScene(el: HTMLDivElement): () => void {
   const themeWatch = new MutationObserver(() => {
     founderMat.color.set(cssColor('--ink', '#f2f3f5'));
     dustMat.color.set(cssColor('--muted', '#9ba1ac'));
-    const tones = starTones();
-    starLayers.forEach((l, i) => l.mat.color.set(tones[i]));
     northGlowMat.color.copy(accent());
     northFlareMat.color.copy(accent());
     if (isLight()) northCoreMat.color.copy(accent());
@@ -286,10 +259,6 @@ function startScene(el: HTMLDivElement): () => void {
 
 
   const sky = (time: number) => {
-    starLayers.forEach(l => {
-      l.mat.opacity = l.base * (0.55 + 0.45 * Math.sin(time * l.speed + l.phase));
-    });
-
     const breathe = 1 + 0.04 * Math.sin(time * 1.4);
     northGlow.scale.setScalar(1.5 * breathe);
     northFlare.scale.setScalar(2.3 * breathe);

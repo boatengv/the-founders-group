@@ -1,15 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, useScroll, useTransform } from 'motion/react';
-import { ArrowRight, Handshake, LineChart, Target, Wrench } from 'lucide-react';
-import { FOUNDERS, GROUP, MOMENTS, PERKS, VENTURES, liveProductCount, numberWord } from '../data';
+import { ArrowRight } from 'lucide-react';
+import { FOUNDERS, GROUP, MOMENTS, VENTURES, liveProductCount, numberWord } from '../data';
 import { href } from '../router';
 import { HeroMedia, PhotoBand } from '../components/Scene';
-import { EASE, Reveal, ScrollWords, StaggerGrid } from '../components/Motion';
-import { Section } from '../components/Layout';
-import { FounderCard, VentureCard } from '../components/Cards';
+import { EASE } from '../components/Motion';
 import { Dispatch } from '../components/Dispatch';
+import { VentureTV } from '../components/VentureTV';
+import { MembershipStairs } from '../components/Stairs';
 
-const PERK_ICONS = [Handshake, Target, Wrench, LineChart];
+// Shown first on the home page, in this order; everyone else follows.
+const FEATURED_FOUNDERS = ['victor-boateng', 'controllah-gabi', 'denzel-kesse', 'gabriel-boateng'];
 
 function CountUp({ value }: { value: number }) {
   const [shown, setShown] = useState(value);
@@ -40,6 +41,10 @@ export function Home() {
     { label: 'Live products', value: liveProductCount() },
     { label: 'Moments in ' + thisYear, value: MOMENTS.filter(m => m.month.startsWith(thisYear)).length },
   ];
+
+  const featured = FEATURED_FOUNDERS.map(id => FOUNDERS.find(f => f.id === id))
+    .filter((f): f is (typeof FOUNDERS)[number] => !!f)
+    .concat(FOUNDERS.filter(f => !FEATURED_FOUNDERS.includes(f.id)));
 
   const heroRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
@@ -121,83 +126,11 @@ export function Home() {
 
       <Dispatch />
 
-      <Section
-        id='ventures'
-        eyebrow='Ventures'
-        title='Built by members'
-        action={
-          <a className='link-arrow' href={href('/ventures')}>
-            All ventures <ArrowRight size={16} />
-          </a>
-        }
-      >
-        <StaggerGrid className='vgrid'>
-          {VENTURES.map(v => (
-            <VentureCard key={v.id} venture={v} />
-          ))}
-        </StaggerGrid>
-      </Section>
-
-      <Section
-        id='founders'
-        eyebrow='Founders'
-        title='The people behind them'
-        action={
-          <a className='link-arrow' href={href('/founders')}>
-            All founders <ArrowRight size={16} />
-          </a>
-        }
-      >
-        <StaggerGrid className='fgrid'>
-          {FOUNDERS.map(f => (
-            <FounderCard key={f.id} founder={f} />
-          ))}
-        </StaggerGrid>
-      </Section>
+      <VentureTV founders={featured} />
 
       <PhotoBand />
 
-      <Section id='membership' eyebrow='Membership' title='What members get'>
-        <StaggerGrid className='perks'>
-          {PERKS.map((p, i) => {
-            const Icon = PERK_ICONS[i % PERK_ICONS.length];
-            return (
-              <div className='perk' key={p.title}>
-                <Icon size={22} aria-hidden='true' />
-                <h3>{p.title}</h3>
-                <p>{p.text}</p>
-              </div>
-            );
-          })}
-        </StaggerGrid>
-      </Section>
-
-      <Reveal>
-      <section className='band'>
-        <div>
-          <p className='eyebrow'>For investors</p>
-          <h2>
-            <ScrollWords text='Founder-led ventures, most already live.' />
-          </h2>
-          <p>See the whole portfolio in one place, and ask for an introduction to the founders you want to meet.</p>
-        </div>
-        <a className='btn btn-light btn-lg' href={href('/investors')}>
-          See the portfolio <ArrowRight size={18} />
-        </a>
-      </section>
-      </Reveal>
-
-      <Reveal>
-      <section className='closing'>
-        <h2>
-          <ScrollWords text='Building something real?' />
-        </h2>
-        <p>Membership is by application. Tell us what you are building and your biggest moment so far.</p>
-        <a className='btn btn-accent btn-lg' href={href('/apply')}>
-          Apply to join <ArrowRight size={18} />
-        </a>
-      </section>
-      </Reveal>
+      <MembershipStairs />
     </>
   );
 }

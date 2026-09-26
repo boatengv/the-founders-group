@@ -11,6 +11,7 @@
   --tone: #c4c7cc;
   --tone-2: #6f747c;
   --gutter: clamp(16px, 4vw, 48px);
+  --nav-h: 75px;
   --band: #16181d;
   --display: 'Bricolage Grotesque', 'Arial Black', system-ui, sans-serif;
   --body: 'Instrument Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
@@ -786,6 +787,313 @@ h3 {
   object-fit: cover;
 }
 
+/* ---------- home: founders and membership on one screen ---------- */
+
+.fgrid-home {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.fgrid-home .stagger-item {
+  position: relative;
+}
+
+.fgrid-home .stagger-item:hover,
+.fgrid-home .stagger-item:focus-within {
+  z-index: 3;
+}
+
+.fcard-compact {
+  position: relative;
+  padding: 16px;
+  gap: 14px;
+}
+
+.fcard-compact h3 {
+  font-size: 17px;
+}
+
+.fcard-compact .fcard-role {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.fcard-compact .fcard-role span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fcard-index {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 6px;
+  margin: 2px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fcard-index li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 9px 3px 4px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 13px;
+  color: var(--muted);
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.fcard-index b {
+  padding: 1px 5px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--ink);
+  font: 500 10px/1.4 var(--mono);
+}
+
+.fcard-index li:hover {
+  color: var(--ink);
+  border-color: var(--accent);
+}
+
+.view-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 18px;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--ink);
+}
+
+.view-more span {
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  font: 500 12px/1.5 var(--mono);
+}
+
+.view-more:hover {
+  color: var(--accent);
+}
+
+@media (max-width: 1100px) {
+  .fgrid-home {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .fgrid-home {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- membership staircase ---------- */
+
+/* membership down the left; the stacked pages fill the right, top to bottom */
+.stairs-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  gap: clamp(28px, 5vw, 72px);
+  align-items: stretch;
+}
+
+.stairs-col .section-head {
+  margin-bottom: 24px;
+}
+
+.stairs {
+  display: grid;
+  gap: 10px;
+}
+
+.step {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 22px 22px 26px;
+  border-top: 2px solid var(--accent);
+  background: linear-gradient(to bottom, var(--surface), transparent);
+}
+
+
+.step svg {
+  color: var(--accent);
+}
+
+.step h3 {
+  font-size: 17px;
+}
+
+.step p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.step-num {
+  position: absolute;
+  top: 18px;
+  right: 20px;
+  font: 500 12px/1 var(--mono);
+  color: var(--tone-2);
+}
+
+/* two pages stacked like a book; the top one has a dog-eared corner */
+
+@property --fold {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 120px;
+}
+
+/* the sheet underneath peeks out past the column, so the top page lines up */
+.pages {
+  display: grid;
+  margin: 0 -14px -14px 0;
+  padding: 0 14px 14px 0;
+  --flap: #2c3038;
+  --flap-edge: #1a1d23;
+}
+
+:root[data-theme='light'] .pages {
+  --flap: #d9dde3;
+  --flap-edge: #f6f7f9;
+}
+
+.page {
+  grid-area: 1 / 1;
+  position: relative;
+  --fold: 120px;
+  transition: --fold 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.page-face {
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: var(--surface);
+}
+
+.page:not(.front) .page-face {
+  background: var(--surface-2);
+}
+
+.page.front .page-face {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--fold)), calc(100% - var(--fold)) 100%, 0 100%);
+}
+
+.page-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 32px;
+  height: 100%;
+  padding: clamp(32px, 4.5vw, 64px);
+  padding-bottom: calc(clamp(32px, 4.5vw, 64px) + 24px);
+}
+
+.page-content h2 {
+  margin-top: 8px;
+  font-size: clamp(40px, 5.6vw, 84px);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+}
+
+.page-text {
+  margin: 20px 0 0;
+  max-width: 44ch;
+  font-size: clamp(16px, 1.4vw, 19px);
+  color: var(--muted);
+}
+
+.page-content .btn {
+  flex: none;
+}
+
+/* the page going under keeps its words until the new one covers it */
+.page:not(.front) .page-content,
+.page:not(.front) .turn {
+  visibility: hidden;
+  transition: visibility 0s linear 0.4s;
+}
+
+.turn {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font: 500 12px/1 var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.turn-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 26px;
+  transition: color 0.2s ease;
+}
+
+.turn-fold {
+  display: block;
+  width: var(--fold);
+  height: var(--fold);
+  border-radius: 0 0 0 16px;
+  background: linear-gradient(to top left, transparent 50%, var(--flap) 50%, var(--flap-edge) 100%);
+  filter: drop-shadow(-8px -8px 14px rgba(0, 0, 0, 0.4));
+}
+
+.page.front:has(.turn:hover),
+.page.front:has(.turn:focus-visible) {
+  --fold: 180px;
+}
+
+.turn:hover .turn-label,
+.turn:focus-visible .turn-label {
+  color: var(--accent);
+}
+
+.turn:focus-visible {
+  outline: none;
+}
+
+.turn:focus-visible .turn-fold {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (max-width: 900px) {
+  .stairs-layout {
+    grid-template-columns: 1fr;
+  }
+  .page {
+    --fold: 88px;
+  }
+  .page.front:has(.turn:hover),
+  .page.front:has(.turn:focus-visible) {
+    --fold: 120px;
+  }
+}
+
 /* ---------- perks ---------- */
 
 .perks {
@@ -863,6 +1171,17 @@ h3 {
   grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
   gap: 40px;
   align-items: start;
+  margin-top: 72px;
+}
+
+/* inner pages read as one page, not scenes: the first section follows the
+   intro closely, and the two halves of a split start level */
+.page-head + .section {
+  padding-top: 16px;
+}
+
+.split > .section:not(.form-card) {
+  padding-top: 0;
 }
 
 .checks {

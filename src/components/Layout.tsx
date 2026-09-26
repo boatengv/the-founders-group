@@ -4,6 +4,7 @@ import { Menu, Moon, Sun, X } from 'lucide-react';
 import { MotionConfig } from 'motion/react';
 import { Reveal, ScrollProgress, ScrollWords, useSmoothScroll } from './Motion';
 import { GROUP } from '../data';
+import { StarSky } from './StarSky';
 import { href } from '../router';
 
 type Theme = 'dark' | 'light';
@@ -43,6 +44,7 @@ export function Layout({ current, children }: { current: string; children: React
   return (
     <MotionConfig reducedMotion='user'>
     <ScrollProgress />
+    <StarSky />
       <header className='nav'>
         <a className='brand' href={href('/')}>
           <span className='brand-mark' aria-hidden='true' />
