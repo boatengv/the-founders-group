@@ -9,7 +9,7 @@ import '../scene.css';
 // Ventures sit on an inner ring in their own colours, founders orbit outside,
 // and small sparks travel along each founder-venture link. Behind it sits a
 // twinkling starfield with one bright north star, and every so often a comet
-// leaves a venture and chases it.
+// leaves a venture and chases it. The star is kept small and dim on purpose.
 function startScene(el: HTMLDivElement): () => void {
   let renderer: THREE.WebGLRenderer;
   try {
@@ -189,14 +189,6 @@ function startScene(el: HTMLDivElement): () => void {
     beam(n * 0.025, h);
     ctx.restore();
   }, 256);
-  const streakTex = makeTexture((ctx, n) => {
-    const g = ctx.createLinearGradient(0, 0, n, 0);
-    g.addColorStop(0, 'rgba(255,255,255,0)');
-    g.addColorStop(0.85, 'rgba(255,255,255,0.9)');
-    g.addColorStop(1, 'rgba(255,255,255,1)');
-    ctx.fillStyle = g;
-    ctx.fillRect(0, n / 2 - 2, n, 4);
-  }, 128);
 
   // Starfield: three layers that twinkle out of step with each other.
   const starTones = () =>
@@ -228,14 +220,14 @@ function startScene(el: HTMLDivElement): () => void {
   // The north star the ventures chase.
   const accent = () => new THREE.Color(cssColor('--accent', '#ff6a1a'));
   const northGlowMat = new THREE.SpriteMaterial({ map: glowTex, color: accent(), transparent: true, depthWrite: false });
-  const northFlareMat = new THREE.SpriteMaterial({ map: flareTex, color: accent(), transparent: true, depthWrite: false, opacity: 0.9 });
-  const northCoreMat = new THREE.SpriteMaterial({ map: glowTex, color: 0xffffff, transparent: true, depthWrite: false });
+  const northFlareMat = new THREE.SpriteMaterial({ map: flareTex, color: accent(), transparent: true, depthWrite: false, opacity: 0.35 });
+  const northCoreMat = new THREE.SpriteMaterial({ map: glowTex, color: 0xffffff, transparent: true, depthWrite: false, opacity: 0.6 });
   disposables.push(northGlowMat, northFlareMat, northCoreMat);
   const north = new THREE.Group();
   const northGlow = new THREE.Sprite(northGlowMat);
   const northFlare = new THREE.Sprite(northFlareMat);
   const northCore = new THREE.Sprite(northCoreMat);
-  northCore.scale.setScalar(0.5);
+  northCore.scale.setScalar(0.28);
   if (isLight()) northCoreMat.color.copy(accent());
   north.add(northGlow, northFlare, northCore);
   scene.add(north);
@@ -261,14 +253,6 @@ function startScene(el: HTMLDivElement): () => void {
     return { vid: v.id, sprites, t: 0, delay: 0.8 + i * 1.3, speed: 0.32 + rand() * 0.12, lift: 1.5 + rand() * 2.5 };
   });
 
-  // An occasional shooting star across the back of the sky.
-  const shootMat = new THREE.MeshBasicMaterial({ map: streakTex, color: new THREE.Color(starTones()[0]), transparent: true, depthWrite: false, opacity: 0 });
-  const shootGeo = new THREE.PlaneGeometry(1, 1);
-  disposables.push(shootMat, shootGeo);
-  const shoot = new THREE.Mesh(shootGeo, shootMat);
-  shoot.scale.set(6, 0.12, 1);
-  scene.add(shoot);
-  const shootState = { t: 1, wait: 2.5, from: new THREE.Vector3(), dir: new THREE.Vector3() };
 
   group.rotation.x = 0.35;
 
@@ -305,7 +289,6 @@ function startScene(el: HTMLDivElement): () => void {
     dustMat.color.set(cssColor('--muted', '#9ba1ac'));
     const tones = starTones();
     starLayers.forEach((l, i) => l.mat.color.set(tones[i]));
-    shootMat.color.set(tones[0]);
     northGlowMat.color.copy(accent());
     northFlareMat.color.copy(accent());
     if (isLight()) northCoreMat.color.copy(accent());
@@ -342,11 +325,11 @@ function startScene(el: HTMLDivElement): () => void {
     });
 
     pulse = Math.max(0, pulse - dt * 1.6);
-    const breathe = 1 + 0.07 * Math.sin(time * 1.4);
-    northGlow.scale.setScalar(2.6 * breathe + pulse * 2.2);
-    northFlare.scale.setScalar(4.2 * breathe + pulse * 3);
+    const breathe = 1 + 0.04 * Math.sin(time * 1.4);
+    northGlow.scale.setScalar(1.1 * breathe + pulse * 0.4);
+    northFlare.scale.setScalar(1.6 * breathe + pulse * 0.5);
     northFlareMat.rotation = Math.sin(time * 0.25) * 0.2;
-    northGlowMat.opacity = 0.75 + pulse * 0.25;
+    northGlowMat.opacity = 0.3 + pulse * 0.15;
 
     group.updateMatrix();
     comets.forEach(c => {
@@ -377,22 +360,6 @@ function startScene(el: HTMLDivElement): () => void {
       }
     });
 
-    const sh = shootState;
-    if (sh.t >= 1) {
-      shootMat.opacity = 0;
-      sh.wait -= dt;
-      if (sh.wait <= 0) {
-        sh.t = 0;
-        sh.wait = 4 + rand() * 6;
-        sh.from.set(-6 + rand() * 30, 6 + rand() * 7, -14);
-        sh.dir.set(-1, -0.42 - rand() * 0.2, 0).normalize();
-        shoot.rotation.z = Math.atan2(sh.dir.y, sh.dir.x) + Math.PI;
-      }
-    } else {
-      sh.t += dt / 0.9;
-      shoot.position.copy(sh.from).addScaledVector(sh.dir, sh.t * 14);
-      shootMat.opacity = Math.sin(Math.min(1, sh.t) * Math.PI) * 0.9;
-    }
   };
 
   let last = performance.now();
