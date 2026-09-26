@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import { Menu, Moon, Sun, X } from 'lucide-react';
 import { MotionConfig } from 'motion/react';
-import { Marquee, Reveal, ScrollProgress, useSmoothScroll } from './Motion';
-import { GROUP, VENTURES } from '../data';
+import { Reveal, ScrollProgress, ScrollWords, useSmoothScroll } from './Motion';
+import { GROUP } from '../data';
 import { href } from '../router';
 
 type Theme = 'dark' | 'light';
@@ -43,7 +43,6 @@ export function Layout({ current, children }: { current: string; children: React
   return (
     <MotionConfig reducedMotion='user'>
     <ScrollProgress />
-    <Marquee items={VENTURES.map(v => v.name + ' \u00b7 ' + v.stage)} />
       <header className='nav'>
         <a className='brand' href={href('/')}>
           <span className='brand-mark' aria-hidden='true' />
@@ -119,7 +118,9 @@ export function Section({
       <Reveal className='section-head'>
         <div>
           {eyebrow ? <p className='eyebrow'>{eyebrow}</p> : null}
-          <h2>{title}</h2>
+          <h2>
+            <ScrollWords text={title} />
+          </h2>
         </div>
         {action}
       </Reveal>

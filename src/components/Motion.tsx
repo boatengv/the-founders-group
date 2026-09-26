@@ -1,11 +1,48 @@
-import { Children, isValidElement, useEffect } from 'react';
-import type { ReactNode } from 'react';
-import { motion, useScroll, useSpring } from 'motion/react';
+import { Children, isValidElement, useEffect, useRef } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
+import type { MotionValue } from 'motion/react';
+import { motion, useReducedMotion, useScroll, useSpring, useTransform } from 'motion/react';
 import '../motion.css';
 
 export const EASE = [0.22, 1, 0.36, 1] as const;
 
-// Fades and lifts its content into place the first time it scrolls into view.
+// Scenes come in the way they do on a film site: blurred and a little low,
+// then settling into focus once 12% is on screen. They reset only after
+// leaving the screen entirely, remembering which edge they left by, so
+// scrolling back up plays them in again from above.
+function useScene<T extends HTMLElement>(threshold = 0.12) {
+  const ref = useRef<T>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (!('IntersectionObserver' in window)) {
+      el.classList.add('in-view');
+      return;
+    }
+    const enter = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) el.classList.add('in-view');
+      },
+      { threshold, rootMargin: '0px 0px -25px 0px' },
+    );
+    const exit = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) return;
+        el.classList.remove('in-view');
+        el.classList.toggle('from-above', e.boundingClientRect.top < 0);
+      },
+      { threshold: 0 },
+    );
+    enter.observe(el);
+    exit.observe(el);
+    return () => {
+      enter.disconnect();
+      exit.disconnect();
+    };
+  }, [threshold]);
+  return ref;
+}
+
 export function Reveal({
   children,
   delay = 0,
@@ -15,20 +52,19 @@ export function Reveal({
   delay?: number;
   className?: string;
 }) {
+  const ref = useScene<HTMLDivElement>();
   return (
-    <motion.div
-      className={className}
-      initial={{ opacity: 0, y: 28 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.7, ease: EASE, delay }}
+    <div
+      ref={ref}
+      className={'reveal' + (className ? ' ' + className : '')}
+      style={delay ? { transitionDelay: delay + 's' } : undefined}
     >
       {children}
-    </motion.div>
+    </div>
   );
 }
 
-// A grid whose items rise in one after another.
+// A grid whose items come into focus one after another.
 export function StaggerGrid({
   className,
   children,
@@ -38,29 +74,61 @@ export function StaggerGrid({
   children: ReactNode;
   list?: boolean;
 }) {
+  const ref = useScene<HTMLDivElement>(0.05);
   return (
-    <motion.div
-      className={className}
-      role={list ? 'list' : undefined}
-      initial='hidden'
-      whileInView='show'
-      viewport={{ once: true, amount: 0.1 }}
-      variants={{ hidden: {}, show: { transition: { staggerChildren: 0.08 } } }}
-    >
+    <div ref={ref} className={className + ' stagger'} role={list ? 'list' : undefined}>
       {Children.map(children, (child, i) => (
-        <motion.div
+        <div
           key={isValidElement(child) && child.key != null ? String(child.key) : i}
           className='stagger-item'
           role={list ? 'listitem' : undefined}
-          variants={{
-            hidden: { opacity: 0, y: 32, scale: 0.98 },
-            show: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.6, ease: EASE } },
-          }}
+          style={{ '--i': i } as CSSProperties}
         >
           {child}
-        </motion.div>
+        </div>
       ))}
-    </motion.div>
+    </div>
+  );
+}
+
+// A headline that reads itself in: each word brightens and sharpens in turn
+// as the line travels up the screen, and dims again on the way back.
+export function ScrollWords({ text }: { text: string }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const reduce = useReducedMotion();
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start 0.95', 'start 0.6'] });
+  if (reduce) return <>{text}</>;
+  const words = text.split(' ');
+  return (
+    <span ref={ref} className='scroll-words' aria-label={text}>
+      {words.map((w, i) => (
+        <Word key={i} progress={scrollYProgress} from={i / words.length} to={(i + 1) / words.length}>
+          {w}
+        </Word>
+      ))}
+    </span>
+  );
+}
+
+function Word({
+  progress,
+  from,
+  to,
+  children,
+}: {
+  progress: MotionValue<number>;
+  from: number;
+  to: number;
+  children: string;
+}) {
+  const opacity = useTransform(progress, [from, to], [0.16, 1]);
+  const filter = useTransform(progress, [from, to], ['blur(6px)', 'blur(0px)']);
+  return (
+    <>
+      <motion.span aria-hidden='true' style={{ opacity, filter }}>
+        {children}
+      </motion.span>{' '}
+    </>
   );
 }
 
@@ -69,23 +137,6 @@ export function ScrollProgress() {
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, { stiffness: 140, damping: 30, restDelta: 0.001 });
   return <motion.div className='scroll-progress' style={{ scaleX }} aria-hidden='true' />;
-}
-
-// Venture names sliding past in a continuous band.
-export function Marquee({ items }: { items: string[] }) {
-  const row = items.concat(items, items, items);
-  return (
-    <div className='marquee' aria-hidden='true'>
-      <div className='marquee-track'>
-        {row.concat(row).map((t, i) => (
-          <span key={i} className={i % 2 === 0 ? 'solid' : 'outline'}>
-            {t}
-            <i />
-          </span>
-        ))}
-      </div>
-    </div>
-  );
 }
 
 // Weighted wheel scrolling: the wheel moves a target and the page eases toward

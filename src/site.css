@@ -327,7 +327,7 @@ h3 {
 /* ---------- sections ---------- */
 
 .section {
-  padding: 64px 0 0;
+  padding: clamp(96px, 13vw, 168px) 0 0;
   scroll-margin-top: 80px;
 }
 

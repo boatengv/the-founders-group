@@ -4,7 +4,7 @@ import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import type { Moment, Venture } from '../data';
 import { MOMENTS, VENTURES, monthLabel, ventureById } from '../data';
 import { href } from '../router';
-import { EASE } from './Motion';
+import { EASE, Reveal, ScrollWords } from './Motion';
 import '../dispatch.css';
 
 const ROTATE_MS = 6500;
@@ -63,16 +63,18 @@ export function Dispatch() {
 
   return (
     <section className='section dispatch' id='moments'>
-      <div className='dispatch-mast'>
+      <Reveal className='dispatch-mast'>
         <div>
           <p className='eyebrow'>Moments</p>
-          <h2>The Dispatch</h2>
+          <h2>
+            <ScrollWords text='The Dispatch' />
+          </h2>
         </div>
         <p className='dispatch-issue'>
           <span className='live-dot' aria-hidden='true' />
           {issue} · {MOMENTS.length} {MOMENTS.length === 1 ? 'story' : 'stories'} · newest first
         </p>
-      </div>
+      </Reveal>
 
       <nav className='desks' aria-label='Filter moments by venture'>
         <button type='button' aria-pressed={desk === 'all'} onClick={() => setDesk('all')}>
@@ -85,6 +87,7 @@ export function Dispatch() {
         ))}
       </nav>
 
+      <Reveal delay={0.1}>
       <div className='dispatch-grid' onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
         <article className='lead'>
           <AnimatePresence mode='wait'>
@@ -172,6 +175,7 @@ export function Dispatch() {
           </a>
         </aside>
       </div>
+      </Reveal>
     </section>
   );
 }
