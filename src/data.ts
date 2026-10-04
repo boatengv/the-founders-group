@@ -26,13 +26,6 @@ export type Founder = {
   photo: string;
 };
 
-export type Moment = {
-  month: string;
-  ventureId: string;
-  title: string;
-  link?: string;
-};
-
 export type Perk = { title: string; text: string };
 
 export const GROUP = {
@@ -52,7 +45,7 @@ export const VENTURES: Venture[] = [
       'The team runs on its own tools: a shared log of tutors, clients and matches, and Taskify for planning, both with Claude connectors.',
     ],
     color: '#f2f2f2',
-    founders: ['controllah-gabi', 'victor-boateng'],
+    founders: ['controllah-gabi'],
     links: [
       { label: 'inpersontutors.space', url: 'https://inpersontutors.space/' },
       { label: 'Tutor and client log', url: 'https://tutor-and-client-log-f5ocrb.v2.appdeploy.ai/' },
@@ -99,7 +92,7 @@ export const VENTURES: Venture[] = [
     color: '#969696',
     founders: ['victor-boateng'],
     links: [
-      { label: 'Synthetic Talent site', url: 'https://synthetic-talent-98oer8.v2.appdeploy.ai/' },
+      { label: 'Synthetic Talent site', url: 'https://boatengv.github.io/SyntheticTalent-Web/' },
     ],
     image: './resources/ventures/synthetic-talent.jpg',
   },
@@ -121,8 +114,8 @@ export const FOUNDERS: Founder[] = [
   {
     id: 'victor-boateng',
     name: 'Victor Boateng',
-    roles: ['Co-founder, In Person Tutors', 'Founder, Synthetic Talent'],
-    ventures: ['in-person-tutors', 'synthetic-talent'],
+    roles: ['Founder, Synthetic Talent'],
+    ventures: ['synthetic-talent'],
     photo: './resources/founders/victor-boateng.jpg',
   },
   {
@@ -159,32 +152,6 @@ export const FOUNDERS: Founder[] = [
     roles: ['Founder, stealth venture'],
     ventures: ['stealth'],
     photo: './resources/founders/issa-shaban.jpg',
-  },
-];
-
-// Newest first. Only real, dated moments go here.
-export const MOMENTS: Moment[] = [
-  {
-    month: '2026-09',
-    ventureId: 'synthetic-talent',
-    title: 'Launch site goes live',
-    link: 'https://synthetic-talent-98oer8.v2.appdeploy.ai/',
-  },
-  {
-    month: '2026-09',
-    ventureId: 'in-person-tutors',
-    title: 'Claude connector ships for tutor and client records',
-  },
-  {
-    month: '2026-09',
-    ventureId: 'in-person-tutors',
-    title: 'Taskify launches with shared team spaces',
-    link: 'https://taskify-jazee1.v2.appdeploy.ai/',
-  },
-  {
-    month: '2026-09',
-    ventureId: 'in-person-tutors',
-    title: 'Tutor and client log goes live for the team',
   },
 ];
 

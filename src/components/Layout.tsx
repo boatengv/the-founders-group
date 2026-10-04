@@ -20,6 +20,7 @@ function readTheme(): Theme {
 const NAV = [
   { path: 'ventures', label: 'Ventures' },
   { path: 'founders', label: 'Founders' },
+  { path: 'stories', label: 'Stories' },
   { path: 'investors', label: 'For investors' },
 ];
 
@@ -92,6 +93,7 @@ export function Layout({ current, children }: { current: string; children: React
         <nav aria-label='Footer'>
           <a href={href('/ventures')}>Ventures</a>
           <a href={href('/founders')}>Founders</a>
+          <a href={href('/stories')}>Stories</a>
           <a href={href('/investors')}>For investors</a>
           <a href={href('/apply')}>Apply</a>
           {import.meta.env.VITE_STATIC ? null : <a href={href('/admin')}>Admin</a>}

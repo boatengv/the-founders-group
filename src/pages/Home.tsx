@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, useScroll, useTransform } from 'motion/react';
 import { ArrowRight } from 'lucide-react';
-import { FOUNDERS, GROUP, MOMENTS, VENTURES, liveProductCount, numberWord } from '../data';
+import { FOUNDERS, GROUP, VENTURES, liveProductCount, numberWord } from '../data';
+import { STORIES } from '../stories';
 import { href } from '../router';
 import { HeroMedia, PhotoBand } from '../components/Scene';
 import { EASE } from '../components/Motion';
@@ -39,7 +40,7 @@ export function Home() {
     { label: 'Founders', value: FOUNDERS.length },
     { label: 'Ventures', value: VENTURES.length },
     { label: 'Live products', value: liveProductCount() },
-    { label: 'Moments in ' + thisYear, value: MOMENTS.filter(m => m.month.startsWith(thisYear)).length },
+    { label: 'Stories in ' + thisYear, value: STORIES.filter(m => m.month.startsWith(thisYear)).length },
   ];
 
   const featured = FEATURED_FOUNDERS.map(id => FOUNDERS.find(f => f.id === id))

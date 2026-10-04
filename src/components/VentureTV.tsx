@@ -121,7 +121,7 @@ export function VentureTV({ founders = FOUNDERS }: { founders?: typeof FOUNDERS 
                     </a>
                     {site ? (
                       <a href={site.url} target='_blank' rel='noopener noreferrer'>
-                        {domainOf(site.url)} <ArrowUpRight size={15} />
+                        {domainOf(site.url).includes("/") ? site.label : domainOf(site.url)} <ArrowUpRight size={15} />
                       </a>
                     ) : null}
                   </div>

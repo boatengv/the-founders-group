@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { ArrowLeft, ArrowUpRight } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ArrowUpRight } from 'lucide-react';
 import type { Founder, Stage } from '../data';
-import { MOMENTS, VENTURES, founderById, monthLabel, ventureById } from '../data';
+import { VENTURES, founderById, monthLabel, ventureById } from '../data';
+import { storiesFor } from '../stories';
 import { href } from '../router';
 import { Section } from '../components/Layout';
 import { VentureCard } from '../components/Cards';
@@ -52,7 +53,7 @@ export function VenturePage({ id }: { id: string }) {
     );
   }
   const team = v.founders.map(fid => founderById(fid)).filter((f): f is Founder => !!f);
-  const moments = MOMENTS.filter(m => m.ventureId === v.id);
+  const moments = storiesFor(v.id);
 
   return (
     <>
@@ -82,26 +83,32 @@ export function VenturePage({ id }: { id: string }) {
         </Reveal>
       </section>
 
-      <Section eyebrow='Moments' title='Milestones'>
+      <Section
+        eyebrow='The Dispatch'
+        title='Stories'
+        action={
+          moments.length ? (
+            <a className='link-arrow' href={href('/stories?v=' + v.id)}>
+              All {v.name} stories <ArrowRight size={16} />
+            </a>
+          ) : undefined
+        }
+      >
         {moments.length ? (
           <ol className='timeline'>
-            {moments.map((m, i) => (
-              <li key={i}>
+            {moments.map(m => (
+              <li key={m.id}>
                 <span className='moment-date'>{monthLabel(m.month)}</span>
                 <p>
-                  {m.link ? (
-                    <a href={m.link} target='_blank' rel='noopener noreferrer'>
-                      {m.title}
-                    </a>
-                  ) : (
-                    m.title
-                  )}
+                  <a className='timeline-story' href={href('/stories/' + m.id)}>
+                    {m.title}
+                  </a>
                 </p>
               </li>
             ))}
           </ol>
         ) : (
-          <p className='muted'>The first moments for {v.name} are on their way.</p>
+          <p className='muted'>The first stories from {v.name} are on their way.</p>
         )}
       </Section>
 

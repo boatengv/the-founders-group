@@ -1,5 +1,5 @@
-import type { Founder, Moment, Venture } from '../data';
-import { founderById, monthLabel, ventureById } from '../data';
+import type { Founder, Venture } from '../data';
+import { founderById, ventureById } from '../data';
 import { href } from '../router';
 import { Avatar, Cover, StageChip, VentureDot } from './Visuals';
 
@@ -22,17 +22,6 @@ export function VentureCard({ venture }: { venture: Venture }) {
           {venture.sector} · {names}
         </p>
       </div>
-    </a>
-  );
-}
-
-export function MomentCard({ moment }: { moment: Moment }) {
-  const v = ventureById(moment.ventureId);
-  return (
-    <a className='moment' href={href('/ventures/' + moment.ventureId)}>
-      <span className='moment-date'>{monthLabel(moment.month)}</span>
-      <p className='moment-title'>{moment.title}</p>
-      {v ? <VentureDot venture={v} /> : null}
     </a>
   );
 }
