@@ -10,6 +10,7 @@ export const SCENE_COLORS: Record<string, string> = {
   'in-person-tutors': '#19b3a6',
   'fun-marketing': '#f5c518',
   adusanko: '#6c8cff',
+  funeducate: '#a875ff',
   'synthetic-talent': '#e0306f',
   stealth: '#8a8f98',
 };

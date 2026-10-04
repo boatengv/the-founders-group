@@ -97,6 +97,20 @@ export const VENTURES: Venture[] = [
     image: './resources/ventures/synthetic-talent.jpg',
   },
   {
+    id: 'funeducate',
+    name: 'FunEducate',
+    sector: 'Books',
+    stage: 'Launching',
+    pitch: 'Drawing books, with the first one almost ready for Amazon.',
+    about: [
+      'FunEducate is Gabriel Boateng’s second company. Its first drawing book is almost finished and should be published on Amazon this week.',
+    ],
+    color: '#a3a3a3',
+    founders: ['gabriel-boateng'],
+    links: [],
+    image: './resources/ventures/funeducate.jpg',
+  },
+  {
     id: 'stealth',
     name: 'Stealth venture',
     sector: 'To be announced',
@@ -128,8 +142,8 @@ export const FOUNDERS: Founder[] = [
   {
     id: 'gabriel-boateng',
     name: 'Gabriel Boateng',
-    roles: ['Co-founder, Fun Marketing'],
-    ventures: ['fun-marketing'],
+    roles: ['Co-founder, Fun Marketing', 'Founder, FunEducate'],
+    ventures: ['fun-marketing', 'funeducate'],
     photo: './resources/founders/gabriel-boateng.jpg',
   },
   {

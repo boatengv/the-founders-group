@@ -43,6 +43,63 @@ export type Story = {
 
 const ALL: Story[] = [
   {
+    id: 'funeducate-first-drawing-book',
+    month: '2026-10',
+    ventureId: 'funeducate',
+    title: 'FunEducate’s first drawing book heads to Amazon',
+    summary: 'The first FunEducate drawing book is almost finished and should be published on Amazon this week.',
+    stats: [
+      { value: 'This week', label: 'Expected Amazon publication' },
+      { value: '1st', label: 'FunEducate drawing book' },
+    ],
+    body: [
+      'FunEducate, Gabriel Boateng’s second company, is close to its first release. The first drawing book is almost finished.',
+      'It should be published on Amazon this week.',
+    ],
+  },
+  {
+    id: 'fun-marketing-35-restaurants-emailed',
+    month: '2026-10',
+    ventureId: 'fun-marketing',
+    title: 'Fun Marketing emails 35 fast food restaurants',
+    summary:
+      'The agency has reached out to 35 target restaurants. Next: face-to-face pitches, and a local Norbury restaurant to practise on.',
+    stats: [
+      { value: '35', label: 'Fast food restaurants emailed' },
+      { value: 'Face to face', label: 'Next: pitches to close deals' },
+      { value: 'Norbury', label: 'Practice restaurant' },
+    ],
+    body: [
+      'This week Gabriel and Hassan sent emails to 35 target fast food restaurants for the Fun Marketing agency.',
+      'Based on the responses, the plan is to move to face-to-face pitches and aim to close some membership deals.',
+      'Alongside that, the team intends to work with a local fast food restaurant in Norbury, using it to practise their social media content strategies and improve its brand awareness online.',
+      'From there, they will take it step by step.',
+    ],
+    quote: 'Practise our social media content strategies to improve brand awareness online.',
+    quoteAfter: 3,
+  },
+  {
+    id: 'adusanko-cocoa-samples-for-bakeries',
+    month: '2026-10',
+    ventureId: 'adusanko',
+    title: 'Bakeries and cafés ask Adusanko for cocoa samples',
+    summary:
+      'Denzel visited bakeries and cafés to learn who supplies their chocolate cakes. A few have asked to try Adusanko’s cocoa products.',
+    stats: [
+      { value: 'Samples', label: 'Requested by bakeries and cafés' },
+      { value: 'Next week', label: 'Sample deliveries' },
+      { value: '2', label: 'Next steps' },
+    ],
+    body: [
+      'This week Denzel Kesse visited bakeries and cafés to find out who supplies the chocolate in their cakes, and who their wholesale providers are.',
+      'A few of them asked for samples of Adusanko’s cocoa products. Once the samples arrive, Denzel will deliver them next week.',
+      'He also took an honest look at how he works: he needs to get better at recording the actions he has taken, and at planning each week in advance.',
+      'Next, Denzel is preparing a detailed catalogue of the products Adusanko deals in, and updating the site with more details about its cocoa products.',
+    ],
+    quote: 'Plan what I am doing for the week rather than “winging” it.',
+    quoteAfter: 3,
+  },
+  {
     id: 'synthetic-talent-nearing-30000-views',
     month: '2026-10',
     ventureId: 'synthetic-talent',
