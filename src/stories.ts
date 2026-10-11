@@ -43,6 +43,26 @@ export type Story = {
 
 const ALL: Story[] = [
   {
+    id: 'synthetic-talent-68000-views',
+    month: '2026-10',
+    ventureId: 'synthetic-talent',
+    title: 'Synthetic Talent’s AI creators pass 68,000 views',
+    summary:
+      'Views across the three flagship AI creators have more than doubled since the last update, from 28,166 to 68,416, with 61 followers between them.',
+    stats: [
+      { value: '28k → 68k', label: 'Views across all pages' },
+      { value: '41,929', label: 'AI Cleared views' },
+      { value: '61', label: 'Followers across all pages' },
+      { value: '6', label: 'Posting slots a day' },
+    ],
+    body: [
+      'Synthetic Talent has passed 68,000 views across all of its managed talent, with 68,416 so far. That is more than double the 28,166 in the last update.',
+      'AI Cleared is still out in front with 41,929 views and 38 followers. Wren Ashby has caught up with Juno Ferro: Wren is on 13,312 views and 13 followers, and Juno on 13,175 views and 10 followers.',
+      'The pages now run to a fixed cadence of six slots a day. AI Cleared posts twice a day across Instagram, TikTok, YouTube and Facebook, and Juno and Wren post twice a day each across Instagram, TikTok and YouTube.',
+      'Every post goes through an approval step before it is published, and each day is tracked with morning, noon, evening and end-of-day reports on views and followers.',
+    ],
+  },
+  {
     id: 'in-person-tutors-rematch-stops-losses',
     month: '2026-10',
     ventureId: 'in-person-tutors',
