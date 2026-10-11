@@ -1,12 +1,12 @@
 // The Dispatch: every story the group has published, one entry per story.
 //
-// To add a story, copy this block to the TOP of the list (stories are sorted by
-// month, and within a month they show in the order written, so the newest post
-// goes first) and fill in what is true:
+// To add a story, copy this block into STORIES (anywhere: the list is sorted
+// newest first: by month, then by `posted`) and fill in what is true:
 //
 //   {
 //     id: 'fun-marketing-first-client',      // unique, lowercase-with-dashes; becomes the page address
 //     month: '2026-10',                      // year-month it happened
+//     posted: '2026-10-11T19:00',            // when you post it (date and time); decides the order
 //     ventureId: 'fun-marketing',            // which business it belongs to (see VENTURES in data.ts)
 //     title: 'First restaurant client signs',
 //     summary: 'One or two sentences shown on cards and at the top of the story.',
@@ -31,6 +31,7 @@ import { VENTURES } from './data';
 export type Story = {
   id: string;
   month: string;
+  posted?: string; // YYYY-MM-DDTHH:MM; orders stories within a month, newest first
   ventureId: string;
   title: string;
   summary?: string;
@@ -46,6 +47,7 @@ const ALL: Story[] = [
   {
     id: 'fun-marketing-three-businesses-locked-in',
     month: '2026-10',
+    posted: '2026-10-11T19:03',
     ventureId: 'fun-marketing',
     title: 'Fun Marketing locks in three social media businesses',
     summary:
@@ -64,6 +66,7 @@ const ALL: Story[] = [
   {
     id: 'wyst-beta-testing-begins',
     month: '2026-10',
+    posted: '2026-10-11T17:38',
     ventureId: 'wyst',
     title: 'Wyst opens testing to its first 16 users',
     summary:
@@ -84,6 +87,7 @@ const ALL: Story[] = [
   {
     id: 'synthetic-talent-68000-views',
     month: '2026-10',
+    posted: '2026-10-11T13:33',
     ventureId: 'synthetic-talent',
     title: 'Synthetic Talent’s AI creators pass 68,000 views',
     summary:
@@ -104,6 +108,7 @@ const ALL: Story[] = [
   {
     id: 'in-person-tutors-rematch-stops-losses',
     month: '2026-10',
+    posted: '2026-10-11T12:17',
     ventureId: 'in-person-tutors',
     title: 'One rematch stops the losses at In Person Tutors',
     summary:
@@ -126,6 +131,7 @@ const ALL: Story[] = [
   {
     id: 'funeducate-first-drawing-book',
     month: '2026-10',
+    posted: '2026-10-04T20:10',
     ventureId: 'funeducate',
     title: 'FunEducate’s first drawing book heads to Amazon',
     summary: 'The first FunEducate drawing book is almost finished and should be published on Amazon this week.',
@@ -141,6 +147,7 @@ const ALL: Story[] = [
   {
     id: 'fun-marketing-35-restaurants-emailed',
     month: '2026-10',
+    posted: '2026-10-04T20:10',
     ventureId: 'fun-marketing',
     title: 'Fun Marketing emails 35 fast food restaurants',
     summary:
@@ -162,6 +169,7 @@ const ALL: Story[] = [
   {
     id: 'adusanko-cocoa-samples-for-bakeries',
     month: '2026-10',
+    posted: '2026-10-04T20:10',
     ventureId: 'adusanko',
     title: 'Bakeries and cafés ask Adusanko for cocoa samples',
     summary:
@@ -183,6 +191,7 @@ const ALL: Story[] = [
   {
     id: 'synthetic-talent-nearing-30000-views',
     month: '2026-10',
+    posted: '2026-10-04T15:49',
     ventureId: 'synthetic-talent',
     title: 'Three AI creators close in on 30,000 views',
     summary:
@@ -207,6 +216,7 @@ const ALL: Story[] = [
   {
     id: 'in-person-tutors-tutors-one-to-six',
     month: '2026-10',
+    posted: '2026-10-04T15:49',
     ventureId: 'in-person-tutors',
     title: 'Tutors grow from one to six as the focus turns to profit',
     summary: 'The tutor side grew sixfold in a week. Next, In Person Tutors steps back from growth to find its route to profit.',
@@ -228,12 +238,14 @@ const ALL: Story[] = [
   {
     id: 'wyst-beta-opens',
     month: '2026-09',
+    posted: '2026-10-11T17:38',
     ventureId: 'wyst',
     title: 'Wyst’s iPhone beta opens to testers',
   },
   {
     id: 'synthetic-talent-launch-site',
     month: '2026-09',
+    posted: '2026-10-04T15:49',
     ventureId: 'synthetic-talent',
     title: 'Launch site goes live',
     link: 'https://synthetic-talent-98oer8.v2.appdeploy.ai/',
@@ -241,12 +253,14 @@ const ALL: Story[] = [
   {
     id: 'in-person-tutors-claude-connector',
     month: '2026-09',
+    posted: '2026-10-04T15:49',
     ventureId: 'in-person-tutors',
     title: 'Claude connector ships for tutor and client records',
   },
   {
     id: 'in-person-tutors-taskify',
     month: '2026-09',
+    posted: '2026-10-04T15:49',
     ventureId: 'in-person-tutors',
     title: 'Taskify launches with shared team spaces',
     link: 'https://taskify-jazee1.v2.appdeploy.ai/',
@@ -254,14 +268,15 @@ const ALL: Story[] = [
   {
     id: 'in-person-tutors-tutor-client-log',
     month: '2026-09',
+    posted: '2026-10-04T15:49',
     ventureId: 'in-person-tutors',
     title: 'Tutor and client log goes live for the team',
   },
 ];
 
-// Newest first; stories from the same month keep the order they are written in.
+// Newest first: by month, then by when each was posted; ties keep the order written.
 export const STORIES: Story[] = ALL.map((s, i) => ({ s, i }))
-  .sort((a, b) => b.s.month.localeCompare(a.s.month) || a.i - b.i)
+  .sort((a, b) => b.s.month.localeCompare(a.s.month) || (b.s.posted ?? '').localeCompare(a.s.posted ?? '') || a.i - b.i)
   .map(x => x.s);
 
 export function storyById(id: string): Story | undefined {
