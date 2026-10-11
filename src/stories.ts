@@ -70,7 +70,7 @@ const ALL: Story[] = [
     ventureId: 'wyst',
     title: 'Wyst opens testing to its first 16 users',
     summary:
-      'Issa Shaban’s app for meeting people through shared interests is now in the hands of around 16 testers, and their feedback is already shaping the next version.',
+      'Issa Shabaan’s app for meeting people through shared interests is now in the hands of around 16 testers, and their feedback is already shaping the next version.',
     link: 'https://www.wystapp.org/',
     stats: [
       { value: '~16', label: 'Testers' },
