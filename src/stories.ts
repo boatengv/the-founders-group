@@ -43,6 +43,26 @@ export type Story = {
 
 const ALL: Story[] = [
   {
+    id: 'wyst-beta-testing-begins',
+    month: '2026-10',
+    ventureId: 'wyst',
+    title: 'Wyst opens testing to its first 16 users',
+    summary:
+      'Issa Shaban’s app for meeting people through shared interests is now in the hands of around 16 testers, and their feedback is already shaping the next version.',
+    link: 'https://www.wystapp.org/',
+    stats: [
+      { value: '~16', label: 'Testers' },
+      { value: 'Manchester', label: 'Launch city' },
+      { value: 'iPhone & Android', label: 'Coming soon' },
+    ],
+    body: [
+      'Wyst helps people meet others nearby through shared interests. You pick what you are into, from gaming and music to football, books and hiking, and Wyst matches you with a small group of people close by, with a group chat to break the ice and local events to turn it into real plans.',
+      'Testing has now begun with around 16 people, and they have already sent back feedback on bugs and areas to improve.',
+      'Issa is working through that feedback now, alongside adding some basic features, while strengthening the foundations the app runs on so it is ready to grow.',
+      'Wyst will launch first in Manchester, on iPhone and Android.',
+    ],
+  },
+  {
     id: 'synthetic-talent-68000-views',
     month: '2026-10',
     ventureId: 'synthetic-talent',
@@ -185,6 +205,12 @@ const ALL: Story[] = [
       'The milestone to watch is next week. Making money from a tutor would show that the growth can sustain itself.',
     ],
     quote: 'Growth as a financial objective was premature.',
+  },
+  {
+    id: 'wyst-beta-opens',
+    month: '2026-09',
+    ventureId: 'wyst',
+    title: 'Wyst’s iPhone beta opens to testers',
   },
   {
     id: 'synthetic-talent-launch-site',
