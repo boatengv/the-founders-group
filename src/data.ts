@@ -111,16 +111,19 @@ export const VENTURES: Venture[] = [
     image: './resources/ventures/funeducate.jpg',
   },
   {
-    id: 'stealth',
-    name: 'Stealth venture',
-    sector: 'To be announced',
-    stage: 'Stealth',
-    pitch: 'Issa Shaban is building something new. Reveal coming soon.',
-    about: ['Details will be shared at launch.'],
-    color: '#7a7a7a',
+    id: 'wyst',
+    name: 'Wyst',
+    sector: 'Social',
+    stage: 'Launching',
+    pitch: 'Meet people nearby through shared interests.',
+    about: [
+      'An app that matches you with small groups of people nearby who share your interests, from gaming and music to football, books and hiking, with group chats and local events to turn shared interests into real plans.',
+      'Launching first in Manchester on iPhone and Android. The app is in beta testing with its first testers now.',
+    ],
+    color: '#8444c2',
     founders: ['issa-shaban'],
-    links: [],
-    image: './resources/ventures/stealth.jpg',
+    links: [{ label: 'wystapp.org', url: 'https://www.wystapp.org/' }],
+    image: './resources/ventures/wyst.jpg',
   },
 ];
 
@@ -163,8 +166,8 @@ export const FOUNDERS: Founder[] = [
   {
     id: 'issa-shaban',
     name: 'Issa Shaban',
-    roles: ['Founder, stealth venture'],
-    ventures: ['stealth'],
+    roles: ['Founder, Wyst'],
+    ventures: ['wyst'],
     photo: './resources/founders/issa-shaban.jpg',
   },
 ];

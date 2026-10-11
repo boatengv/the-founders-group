@@ -12,7 +12,7 @@ export const SCENE_COLORS: Record<string, string> = {
   adusanko: '#6c8cff',
   funeducate: '#a875ff',
   'synthetic-talent': '#e0306f',
-  stealth: '#8a8f98',
+  wyst: '#8444c2',
 };
 
 // A slowly turning network of the group's real founders and ventures.
