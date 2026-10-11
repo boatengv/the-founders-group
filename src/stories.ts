@@ -1,7 +1,8 @@
 // The Dispatch: every story the group has published, one entry per story.
 //
-// To add a story, copy this block into STORIES (anywhere, the list is sorted
-// newest first for you) and fill in what is true:
+// To add a story, copy this block to the TOP of the list (stories are sorted by
+// month, and within a month they show in the order written, so the newest post
+// goes first) and fill in what is true:
 //
 //   {
 //     id: 'fun-marketing-first-client',      // unique, lowercase-with-dashes; becomes the page address
