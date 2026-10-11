@@ -165,7 +165,7 @@ export const FOUNDERS: Founder[] = [
   },
   {
     id: 'issa-shaban',
-    name: 'Issa Shabaan',
+    name: 'Issa Shaaban',
     roles: ['Founder, Wyst'],
     ventures: ['wyst'],
     photo: './resources/founders/issa-shaban.jpg',
