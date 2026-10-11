@@ -43,6 +43,28 @@ export type Story = {
 
 const ALL: Story[] = [
   {
+    id: 'in-person-tutors-rematch-stops-losses',
+    month: '2026-10',
+    ventureId: 'in-person-tutors',
+    title: 'One rematch stops the losses at In Person Tutors',
+    summary:
+      'Rematching a family with a better-suited tutor doubled their spend and stopped the losses. One more conversion would make the business profitable.',
+    stats: [
+      { value: '2×', label: 'Revenue from one family after a rematch' },
+      { value: 'Stopped', label: 'Losses' },
+      { value: '~£1k', label: 'MRR if the next family converts' },
+      { value: '3', label: 'Families in the pipeline' },
+    ],
+    body: [
+      'Last week’s focus was pricing: stop the losses and find the route to profit.',
+      'The breakthrough came from an existing family. Rematching them with a better-suited tutor doubled their spend, and that rematch alone was enough to stop the losses.',
+      'Three families are now in the pipeline. One has a free trial lesson this week; if they convert, monthly revenue reaches just under £1k and the business turns profitable. A second has a free consultation booked, which could take it to £1.1–1.2k. A third is a new lead, with a call planned.',
+      'New sales and tech changes are also in place. The coming weeks will show whether they improve conversion.',
+    ],
+    quote: 'The rematch alone got us there.',
+    quoteAfter: 2,
+  },
+  {
     id: 'funeducate-first-drawing-book',
     month: '2026-10',
     ventureId: 'funeducate',
