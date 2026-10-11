@@ -43,6 +43,24 @@ export type Story = {
 
 const ALL: Story[] = [
   {
+    id: 'fun-marketing-three-businesses-locked-in',
+    month: '2026-10',
+    ventureId: 'fun-marketing',
+    title: 'Fun Marketing locks in three social media businesses',
+    summary:
+      'Three businesses are signed up for social media marketing and content production starts this week. A cosmetic shop now stocks NomadRoots hair oil, and Sempre Access has launched.',
+    stats: [
+      { value: '3', label: 'Social media businesses locked in' },
+      { value: '1', label: 'Cosmetic shop stocking NomadRoots' },
+      { value: 'This week', label: 'Content production starts' },
+    ],
+    body: [
+      'Three social media marketing businesses are locked in, and content production starts this week. Once regular videos and concepts are uploaded, the team will track the data to see what is doing well. Recording for the football club has already started.',
+      'NomadRoots hair oil is now stocked by one cosmetic shop. The website has been improved and is easier to navigate, payment is set up, and orders can now be placed.',
+      'Sempre Access has launched its website. It is a key lock box installing business that also fits Ring cameras to houses, so owners can feel safer without leaving keys under the carpet, and builders or workers can get in when no one is home. Business cards will be ready on Monday and T-shirt printing begins this week.',
+    ],
+  },
+  {
     id: 'wyst-beta-testing-begins',
     month: '2026-10',
     ventureId: 'wyst',
@@ -103,24 +121,6 @@ const ALL: Story[] = [
     ],
     quote: 'The rematch alone got us there.',
     quoteAfter: 2,
-  },
-  {
-    id: 'fun-marketing-three-businesses-locked-in',
-    month: '2026-10',
-    ventureId: 'fun-marketing',
-    title: 'Fun Marketing locks in three social media businesses',
-    summary:
-      'Three businesses are signed up for social media marketing and content production starts this week. A cosmetic shop now stocks NomadRoots hair oil, and Sempre Access has launched.',
-    stats: [
-      { value: '3', label: 'Social media businesses locked in' },
-      { value: '1', label: 'Cosmetic shop stocking NomadRoots' },
-      { value: 'This week', label: 'Content production starts' },
-    ],
-    body: [
-      'Three social media marketing businesses are locked in, and content production starts this week. Once regular videos and concepts are uploaded, the team will track the data to see what is doing well. Recording for the football club has already started.',
-      'NomadRoots hair oil is now stocked by one cosmetic shop. The website has been improved and is easier to navigate, payment is set up, and orders can now be placed.',
-      'Sempre Access has launched its website. It is a key lock box installing business that also fits Ring cameras to houses, so owners can feel safer without leaving keys under the carpet, and builders or workers can get in when no one is home. Business cards will be ready on Monday and T-shirt printing begins this week.',
-    ],
   },
   {
     id: 'funeducate-first-drawing-book',
